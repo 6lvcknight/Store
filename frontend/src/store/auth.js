@@ -12,7 +12,7 @@ const useAuthStore = create((set, get) => ({
 
     setUser: (email) => set({ allUserData: email }),
     setLoading: (loading) => set({ loading }),
-    setLoggedIn: () => get().allUserData !== null
+    isLoggedIn: () => get().allUserData !== null
 }))
 
 /* -> This is typically used in Vite, a build tool that is commonly used with modern frontend frameworks like React, Vue, etc. */

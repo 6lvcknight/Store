@@ -1,22 +1,23 @@
-import { useAuthStore } from '../store/auth';
-import axios from 'axios';
-import jwt_decode from 'jwt-decode';
-import Cookies from 'js-Cookies';
+import useAuthStore from '../store/auth';
+import axios from './axios';
+import { jwtDecode } from "jwt-decode";
+import Cookies from 'js-cookie';
 
 export const login = async (email, password) => {
     try {
-        const { data, status } = await axios.post('user/token/', {
-            email, password
-        });
+        const response = await axios.post('user/token/', { email, password });
+        console.log('Response:', response)
+        const { data, status } = response;
 
         if (status === 200){
             setAuthUser(data.access, data.refresh);
         }
         return {data, error: null}
     } catch (error){
+        console.error('Login error:', error);
         return {
             data: null,
-            error: error.response.data?.detail || 'An error occurred'
+            error: error.response?.data?.detail || 'An error occurred'
         }
     }
 }
@@ -36,7 +37,7 @@ export const register = async (full_name, email, phone, username, password, pass
     } catch (error){
         return {
             data: null,
-            error: error.response.data?.detail || 'An error occurred'
+            error: error.response?.data?.detail || 'An error occurred'
         }
     }
 }
@@ -77,7 +78,7 @@ export const setAuthUser = (access_token, refresh_token) => {
         secure: true
     });
 
-    const decoded = jwt_decode(access_token) ?? null;
+    const decoded = jwtDecode(access_token) ?? null;
     if (decoded) {
         useAuthStore.getState().setUser(decoded);
     }
@@ -95,7 +96,7 @@ export const getRefreshToken = async () => {
 
 export const isAccessTokenExpired = (access_token) => {
     try {
-        const decoded = jwt_decoded(access_token);
+        const decoded = jwtDecode(access_token);
         return decoded.exp < Date.now() / 100;
     } catch (error) {
         console.log(error);

@@ -8,3 +8,5 @@ const instance = axios.create({
         Accept: 'application/json',
     }
 });
+
+export default instance;
