@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from shortuuidfield import ShortUUIDField
+import uuid
 
 
 # Create your models here.
@@ -10,6 +11,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=100, unique=True)
     full_name = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
+    otp = models.CharField(max_length=100)
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -64,9 +66,10 @@ class Profile(models.Model):
             return self.user.full_name
         
     def save(self, *args, **kwargs):
-        if self.full_name == '' or self.full_name == None:
+        if not self.pid:
+            self.pid = uuid.uuid4().hex[:20]  # Generate a unique pid
+        if not self.full_name:
             self.full_name = self.user.full_name
-
         return super(Profile, self).save(*args, **kwargs)
     
 def create_user_profile(sender, instance, created, **kwargs):

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
     const navigate = useNavigate();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
@@ -74,7 +75,7 @@ const LoginPage = () => {
                     <input type="checkbox" className="mr-2" />
                         Remember me
                 </label>
-                <NavLink to="/reset-password" className="hover:underline">Forgot password?</NavLink>
+                <NavLink to="/password-reset" className="hover:underline">Forgot password?</NavLink>
             </div>
 
             <button className="w-full h-12 bg-[#DEDAD7] border-none outline-none rounded-full shadow-lg cursor-pointer text-gray-600 font-semibold mt-4" 

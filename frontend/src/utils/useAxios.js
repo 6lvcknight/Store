@@ -9,7 +9,6 @@ const useAxios = async () => {
 
     const instance = axios.create({
         baseURL: BASE_URL,
-        timeout: 5000,
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
@@ -18,15 +17,15 @@ const useAxios = async () => {
     });
 
     instance.interceptors.request.use(
-        async (config) => {
+        async (req) => {
             if (!isAccessTokenExpired(access_token)) {
-                return config;
+                return req;
             }
             const response = await getRefreshToken(refresh_token);
-        setAuthUser(response.access, response.refresh);
+            setAuthUser(response.access, response.refresh);
 
-        config.headers.Authorization = `Bearer ${response.data.access}`;
-        return config;
+            req.headers.Authorization = `Bearer ${response.data.access}`;
+        return req;
     });
 
     return instance;

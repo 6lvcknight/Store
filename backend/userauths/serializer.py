@@ -3,6 +3,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from django.contrib.auth.password_validation import validate_password
 
+from django.db import IntegrityError
+
 from .models import User, Profile
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -38,23 +40,29 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user = User.objects.create(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            full_name=validated_data['full_name'],
-            phone=validated_data['phone']
-        )
+        try:
+            user = User.objects.create(
+                email=validated_data['email'],
+                username=validated_data['username'],
+                full_name=validated_data['full_name'],
+                phone=validated_data['phone']
+            )
 
-        email_user, mobile = user.email.split('@')
-        user.username = email_user
-        user.set_password(validated_data['password'])
-        user.save()
+            email_username, mobile = user.email.split('@')
+            user.username = email_username
+            user.set_password(validated_data['password'])
+            user.save()
 
-        return user
+            return user
+        except IntegrityError as e:
+            if 'UNIQUE constraint' in str(e):
+                raise serializers.ValidationError({"email": "Email is already in use."})
+            raise e
+        
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profile
+        model = User
         fields = '__all__'
 
 class ProfileSerializer(serializers.ModelSerializer):
