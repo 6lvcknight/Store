@@ -1,23 +1,29 @@
-import { Mail } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-
-import instance from '../../utils/axios'
+import { Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import instance from '../../utils/axios';
 
 const ForgotPassPage = () => {
     const [email, setEmail] = useState('');
+    const [message, setMessage] = useState(null);
+    const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
-        instance.get(`user/reset-password/${ email }/`).then((response) => {
-            console.log(response)
-        }).catch((error) => {
-            console.log(error)
-        })
-    }
+        e.preventDefault();
 
+        try {
+            const response = await instance.get(`user/password-reset-email/${email}/`);
+            console.log(response);
+            setMessage('A password reset link has been sent to your email.');
+            setError(null);
+        } catch (error) {
+            console.error(error);
+            setError('An error occurred while sending the reset email.');
+            setMessage(null);
+        }
+    };
 
-  return (
-    <div className="flex items-center justify-center min-h-screen">
+    return (
+        <div className="flex items-center justify-center min-h-screen">
             <div className='w-[420px] border-[2px] border-solid border-[#B4BFC5] text-white rounded-xl p-[30px] backdrop-opacity-30'>
                 <h1 className='text-[#DEDAD7] text-[36px] text-center font-bold'>Reset Password</h1>
                 <form onSubmit={handleSubmit} className='mt-8 mb-2 space-y-8'>
@@ -40,9 +46,12 @@ const ForgotPassPage = () => {
                         Reset Password
                     </button>
                 </form>
+
+                {message && <p className="text-green-500 text-center mt-4">{message}</p>}
+                {error && <p className="text-red-500 text-center mt-4">{error}</p>}
             </div>
         </div>
-  )
-}
+    );
+};
 
-export default ForgotPassPage
+export default ForgotPassPage;

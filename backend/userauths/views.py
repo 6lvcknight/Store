@@ -1,4 +1,6 @@
 from django.shortcuts import render
+
+from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics, permissions
 
@@ -46,7 +48,7 @@ class PasswordResetEmailVerify(generics.RetrieveAPIView):
             print("Link: ", link)
         return user
 
-class PasswordReset(generics.UpdateAPIView):
+class PasswordChangeView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny, )
     serializer_class = UserSerializer
 
@@ -56,13 +58,15 @@ class PasswordReset(generics.UpdateAPIView):
         otp = payload['otp']
         uidb64 = payload['uidb64']
         password = payload['password']
-        reset_token = payload['reset_token']
+
+        print("otp ======", otp)
+        print("uidb64 ======", uidb64)
+        print("password ======", password)
 
         user = User.objects.get(id=uidb64, otp=otp)
         if user:
             user.set_password(password)
             user.otp = ''
-            user.reset_token = ''
             user.save()
 
             return Response({"message": "Password reset successful."}, status=200)
