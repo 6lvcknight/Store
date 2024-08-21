@@ -42,7 +42,7 @@ const RegisterPage = () => {
         setIsLoading(false)
     }
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black">
             <div className='w-[420px] border-[2px] border-solid border-[#B4BFC5] text-white rounded-xl p-[30px] backdrop-opacity-30'>
                 <h1 className='text-[#DEDAD7] text-[36px] text-center font-bold'>Register</h1>
                 {/*isLoading && <Spinner />*/}
@@ -56,7 +56,7 @@ const RegisterPage = () => {
                             placeholder="Email" 
                             autoComplete="off" 
                             required
-                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black text-[16px] placeholder:text-slate-400 rounded-xl'
+                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400 rounded-xl'
                         />
                         <i className='text-[#DEDAD7] absolute transform -translate-y-1/2 right-5 top-1/2'><Mail /></i>
                     </div>
@@ -69,7 +69,7 @@ const RegisterPage = () => {
                             placeholder="Username" 
                             autoComplete="off" 
                             required
-                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black text-[16px] placeholder:text-slate-400 rounded-xl'
+                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400 rounded-xl'
                         />
                         <i className='text-[#DEDAD7] absolute transform -translate-y-1/2 right-5 top-1/2'><Mail /></i>
                     </div>
@@ -81,7 +81,7 @@ const RegisterPage = () => {
                             value={fullname} 
                             placeholder="Full Name" 
                             required
-                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black text-[16px] placeholder:text-slate-400 rounded-xl'
+                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400 rounded-xl'
                         />
                         <i className='text-[#DEDAD7] absolute transform -translate-y-1/2 right-5 top-1/2'><User /></i>
                     </div>
@@ -93,7 +93,7 @@ const RegisterPage = () => {
                             value={phone} 
                             placeholder="Phone Number" 
                             required
-                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black text-[16px] placeholder:text-slate-400 rounded-xl'
+                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400 rounded-xl'
                         />
                         <i className='text-[#DEDAD7] absolute transform -translate-y-1/2 right-5 top-1/2'><User /></i>
                     </div>
@@ -106,7 +106,7 @@ const RegisterPage = () => {
                             placeholder="Password" 
                             autoComplete="off" 
                             required
-                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black text-[16px] placeholder:text-slate-400 rounded-xl'
+                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400 rounded-xl'
                         />
                         <i className='text-[#DEDAD7] absolute transform -translate-y-1/2 right-5 top-1/2'><RectangleEllipsis /></i>
                     </div>
@@ -119,7 +119,7 @@ const RegisterPage = () => {
                             placeholder="Confirm Password" 
                             autoComplete="off" 
                             required
-                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black text-[16px] placeholder:text-slate-400 rounded-xl'
+                            className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400 rounded-xl'
                         />
                         <i className='text-[#DEDAD7] absolute transform -translate-y-1/2 right-5 top-1/2'><RectangleEllipsis /></i>
                     </div>

@@ -25,13 +25,13 @@ const App = () => {
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavbarRoutes = ['/login', 'register'];
+  const hideNavbarRoutes = ['/login', '/register', "/logout", "/password-reset", "/password-reset/:otp/:uidb64"];
   const isNavbarVisible = !hideNavbarRoutes.includes(location.pathname);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col h-screen">
       {isNavbarVisible && <Navbar />}
-      <div className="flex-grow overflow-hidden">
+      <div className="flex-grow">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
