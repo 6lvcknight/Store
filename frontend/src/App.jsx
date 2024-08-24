@@ -4,14 +4,18 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import MainWrapper from './layout/MainWrapper'
 
 import Navbar from './views/base/Navbar';
+import Footer from './views/base/Footer';
+
+// Importing auth views
 import LoginPage from './views/auth/LoginPage';
 import RegisterPage from './views/auth/RegisterPage';
 import HomePage from './views/HomePage';
 import LogoutPage from './views/auth/LogoutPage';
 import ForgotPassPage from './views/auth/ForgotPassPage';
 import ChangePassPage from './views/auth/ChangePassPage';
-import Footer from './views/base/Footer';
 
+// Importing store views
+import ProductPage from './views/store/ProductPage';
 
 const App = () => {
   return (
@@ -25,23 +29,27 @@ const App = () => {
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavbarRoutes = ['/login', '/register', "/logout", "/password-reset", "/password-reset/:otp/:uidb64"];
+  const hideNavbarRoutes = [];
+  const hideFooterRoutes = ['/login', '/register', "/logout", "/password-reset", "/password-reset/:otp/:uidb64"];
   const isNavbarVisible = !hideNavbarRoutes.includes(location.pathname);
+  const isFooterVisible = !hideFooterRoutes.includes(location.pathname);
 
   return (
     <div className="flex flex-col h-screen">
       {isNavbarVisible && <Navbar />}
-      <div className="flex-grow">
+      <div className="flex-grow dark:bg-black">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<ProductPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="/password-reset" element={<ForgotPassPage />} />
           <Route path="/password-reset/:otp/:uidb64" element={<ChangePassPage />} />
+
+          <Route path="/collections/:slug" element={<HomePage />} />
         </Routes>
       </div>
-      {isNavbarVisible && <Footer />}
+      {isFooterVisible && <Footer />}
     </div>
   );
 };
