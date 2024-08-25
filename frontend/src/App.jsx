@@ -16,6 +16,7 @@ import ChangePassPage from './views/auth/ChangePassPage';
 
 // Importing store views
 import ProductPage from './views/store/ProductPage';
+import ItemPage from './views/store/ItemPage';
 
 const App = () => {
   return (
@@ -37,16 +38,17 @@ const AppContent = () => {
   return (
     <div className="flex flex-col h-screen">
       {isNavbarVisible && <Navbar />}
-      <div className="flex-grow dark:bg-black">
+      <div className="flex-grow dark:bg-black pt-16">
         <Routes>
-          <Route path="/" element={<ProductPage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="/password-reset" element={<ForgotPassPage />} />
           <Route path="/password-reset/:otp/:uidb64" element={<ChangePassPage />} />
 
-          <Route path="/collections/:slug" element={<HomePage />} />
+          <Route path="/product" element={<ProductPage />} />
+          <Route path="/product/:slug" element={<ItemPage />} />
         </Routes>
       </div>
       {isFooterVisible && <Footer />}

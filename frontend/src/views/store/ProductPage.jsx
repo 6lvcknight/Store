@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import instance from '../../utils/axios'
+import { Link } from 'react-router-dom'
 
 const ProductPage = () => {
     const [product, setProduct] = useState([])
@@ -30,7 +31,14 @@ const ProductPage = () => {
       <div class="grid grid-cols-2 md:grid-cols-3 md:p-12 gap-8">
         {product.map((product, index) => (
         <div>
-            <img className="h-auto max-w-full" src={product.image} alt=""/>
+          <Link to={`/product/${product.id}`}>
+            <img 
+              className="h-auto max-w-full" 
+              src={product.image} 
+              alt={product.description}
+              style={{height: '44rem', objectFit: 'cover'}}
+            />
+          </Link>
             <div className='mt-4'>
               <h5 className="text-l dark:text-white">{product.title}</h5>
               <h6 className="text-m dark:text-white">{product.description}</h6>
