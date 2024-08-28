@@ -1,7 +1,7 @@
 from django.urls import path
 
 from userauths.views import MyTokenObtainPairView, RegisterView, PasswordResetEmailVerify, PasswordChangeView
-from store.views import CategoryListAPIView, ProductListAPIView, ProductDetailAPIView
+from store.views import CategoryListAPIView, ProductListAPIView, ProductDetailAPIView, CartAPIView
 
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -16,4 +16,5 @@ urlpatterns = [
     path('store/category/', CategoryListAPIView.as_view(), name='category_list'),
     path('store/product/', ProductListAPIView.as_view(), name='product_list'),
     path('store/product-detail/<slug>', ProductDetailAPIView.as_view(), name='product_detail'),
+    path('store/cart/', CartAPIView.as_view(), name='cart'),
 ]

@@ -30,18 +30,16 @@ const ProductPage = () => {
     <>
       <div class="grid grid-cols-2 md:grid-cols-3 md:p-12 gap-8">
         {product.map((product, index) => (
-        <div>
-          <Link to={`/product/${product.id}`}>
+        <div key={index}>
+          <Link to={`/product/${product.slug}`}>
             <img 
               className="h-auto max-w-full" 
               src={product.image} 
-              alt={product.description}
               style={{height: '44rem', objectFit: 'cover'}}
             />
           </Link>
             <div className='mt-4'>
               <h5 className="text-l dark:text-white">{product.title}</h5>
-              <h6 className="text-m dark:text-white">{product.description}</h6>
               <h6 className="text-sm dark:text-neutral-400">${product.price}</h6>
             </div>
         </div>

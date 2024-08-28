@@ -9,6 +9,9 @@ from shortuuid.django_fields import ShortUUIDField
 
 # Create your models here.
 
+
+
+
 class Category(models.Model):
     title = models.CharField(max_length=100)
     image = models.ImageField(upload_to='images/category', default="images/category/default.jpg", null=True, blank=True)
@@ -124,10 +127,13 @@ class Cart(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    shipping_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    service_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+
+    sub_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    shipping_amount = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     tax_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    #service_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     total_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    grand_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
 
     country = models.CharField(max_length=100, null=True, blank=True)
 
@@ -156,11 +162,14 @@ class CartOrder(models.Model):
     vendor = models.ManyToManyField(Vendor, blank=True)
     buyer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
+    price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+
     sub_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    shipping_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    shipping_amount = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     tax_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    service_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    #service_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     total_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    grand_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
 
     payment_status = models.CharField(choices=PAYMENT_STATUS, max_length=100, default='pending')
     order_status = models.CharField(choices=ORDER_STATUS, max_length=100, default='pending')
@@ -311,3 +320,17 @@ class Coupon(models.Model):
     class Meta:
         verbose_name = 'Coupon'
         verbose_name_plural = 'Coupons'
+
+class Tax(models.Model):
+    province = models.CharField(max_length=100, default='ON') 
+    country = models.CharField(max_length=100, default='CA')  
+    rate = models.IntegerField(default=5, help_text='In Percentage')
+    active = models.BooleanField(default=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.country
+    
+    class Meta:
+        verbose_name = 'Tax'
+        verbose_name_plural = 'Taxes'

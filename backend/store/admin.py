@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Category, Coupon, Notification, Product, Gallery, ProductFaq, Review, Specification, Size, Color, Cart, CartOrder, CartOrderItem, Wishlist
+from .models import Category, Coupon, Notification, Product, Gallery, ProductFaq, Review, Specification, Size, Color, Cart, CartOrder, CartOrderItem, Wishlist, Tax
+from .forms import LocationForm
 
 # Register your models here.
 class GalleryInline(admin.TabularInline):
@@ -53,16 +54,21 @@ class WishlistAdmin(admin.ModelAdmin):
     list_filter = ['date']
     list_per_page = 10
 
+class CartAdmin(admin.ModelAdmin):
+    list_display = ['cart_id']
+
+class TaxAdmin(admin.ModelAdmin):
+    form = LocationForm
+    list_display = ('country', 'province', 'rate', 'active', 'date')
+
+
 admin.site.register(Category)
 admin.site.register(Product, ProductAdmin)
 
-admin.site.register(Cart)
+admin.site.register(Cart, CartAdmin)
 admin.site.register(CartOrder)
 admin.site.register(CartOrderItem)
 
-admin.site.register(ProductFaq)
 admin.site.register(Review)
-admin.site.register(Notification)
-admin.site.register(Coupon)
-admin.site.register(Wishlist, WishlistAdmin)
+admin.site.register(Tax, TaxAdmin)
 

@@ -40,7 +40,7 @@ const LoginPage = () => {
     };
   return (
     <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black">
-    <div className='w-[420px] border-[2px] border-solid border-[#B4BFC5] text-white rounded-xl p-[30px] backdrop-opacity-30'>
+    <div className='w-[420px] border-[2px] border-solid border-[#B4BFC5] text-white p-[30px] backdrop-opacity-30'>
         <h1 className='text-[#DEDAD7] text-[36px] text-center font-bold'>Login</h1>
         <form onSubmit={handleLogin} className='mt-8 mb-2 space-y-8'>
             <div className='relative w-full h-12'>
@@ -52,7 +52,7 @@ const LoginPage = () => {
                     placeholder="Email" 
                     autoComplete="off" 
                     required
-                    className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400 rounded-xl'
+                    className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400'
                 />
                 <i className='text-[#DEDAD7] absolute transform -translate-y-1/2 right-5 top-1/2'><Mail /></i>
             </div>
@@ -78,7 +78,7 @@ const LoginPage = () => {
                 <NavLink to="/password-reset" className="hover:underline">Forgot password?</NavLink>
             </div>
 
-            <button className="w-full h-12 bg-[#DEDAD7] border-none outline-none rounded-full shadow-lg cursor-pointer text-gray-600 font-semibold mt-4" 
+            <button className="w-full h-12 bg-[#DEDAD7] border-none outline-none shadow-lg cursor-pointer text-gray-600 font-semibold mt-4" 
             type="submit">
                 Login
             </button>

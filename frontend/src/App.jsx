@@ -38,7 +38,7 @@ const AppContent = () => {
   return (
     <div className="flex flex-col h-screen">
       {isNavbarVisible && <Navbar />}
-      <div className="flex-grow dark:bg-black pt-16">
+      <div className="flex-grow dark:bg-black pt-24">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
