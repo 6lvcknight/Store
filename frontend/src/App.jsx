@@ -17,6 +17,8 @@ import ChangePassPage from './views/auth/ChangePassPage';
 // Importing store views
 import ProductPage from './views/store/ProductPage';
 import ItemPage from './views/store/ItemPage';
+import CheckoutPage from './views/store/CheckoutPage';
+import CartPage from './views/store/CartPage';
 
 const App = () => {
   return (
@@ -30,20 +32,22 @@ const App = () => {
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavbarRoutes = [];
-  const hideFooterRoutes = ['/login', '/register', "/logout", "/password-reset", "/password-reset/:otp/:uidb64"];
+  const hideNavbarRoutes = ['/checkout'];
+  const hideFooterRoutes = ['/login', '/register', "/logout", "/password-reset", "/password-reset/:otp/:uidb64", '/checkout'];
   const isNavbarVisible = !hideNavbarRoutes.includes(location.pathname);
   const isFooterVisible = !hideFooterRoutes.includes(location.pathname);
 
   return (
     <div className="flex flex-col h-screen">
       {isNavbarVisible && <Navbar />}
-      <div className="flex-grow dark:bg-black pt-24">
+      <div className="flex-grow dark:bg-black">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/logout" element={<LogoutPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path='/checkout' element={<CheckoutPage />} />
           <Route path="/password-reset" element={<ForgotPassPage />} />
           <Route path="/password-reset/:otp/:uidb64" element={<ChangePassPage />} />
 

@@ -5,12 +5,12 @@ import { Link } from 'react-router-dom'
 
 const ProductPage = () => {
     const [product, setProduct] = useState([])
+    const [category, setCategory] = useState([])
 
     useEffect(() => {
         instance.get('store/product/')
             .then(res => {
                 setProduct(res.data)
-                console.log(res.data)
             })
             .catch(err => {
                 console.log(err)
@@ -20,15 +20,15 @@ const ProductPage = () => {
     useEffect(() => {
       instance.get('store/category/')
           .then(res => {
-              console.log(res.data)
+              setCategory(res.data)
           })
           .catch(err => {
               console.log(err)
           })
   },[])
   return (
-    <>
-      <div class="grid grid-cols-2 md:grid-cols-3 md:p-12 gap-8">
+    <div className='pt-24'>
+      <div className="grid grid-cols-2 md:grid-cols-3 md:p-12 gap-8">
         {product.map((product, index) => (
         <div key={index}>
           <Link to={`/product/${product.slug}`}>
@@ -45,7 +45,7 @@ const ProductPage = () => {
         </div>
         ))}
       </div>
-    </>
+    </div>
   )
 }
 

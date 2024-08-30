@@ -17,7 +17,7 @@ const ItemPage = () => {
   const param = useParams();
   const address = GetCurrentAddress();
   const userData = UserData();
-  const cart_ID = CardID();
+  const cart_id = CardID();
 
   const toggleColorDrawer = () => {
     setColorDrawer(!colorDrawer);
@@ -51,29 +51,28 @@ const ItemPage = () => {
   };
 
   const handleToCart = async () => {
-    const formdata = new FormData();
+    try {
+        const formdata = new FormData();
 
-    formdata.append("product_id", product.id);
-    formdata.append("user_id", userData?.user_id);
-    formdata.append('qty', quantity);
-    formdata.append('price', product.price);
-    formdata.append('shipping_amount', product.shipping_price);
-    formdata.append('country', address.country);
-    formdata.append('size', size);
-    formdata.append('color', color);
-    formdata.append('cart_id', cart_ID)
+        formdata.append("product_id", product.id);
+        formdata.append("user_id", userData?.user_id);
+        formdata.append('qty', quantity);
+        formdata.append('price', product.price);
+        formdata.append('shipping_amount', product.shipping_amount);
+        formdata.append('country', address.country);
+        formdata.append('size', size);
+        formdata.append('color', color);
+        formdata.append('cart_id', cart_id);
 
-    const response = await instance.post('store/cart/', formdata)
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+        const response = await instance.post('store/cart/', formdata);
+        console.log(response.data);
+    } catch (error) {
+        console.log(error);
+    }
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center pt-24">
 
       <div className="w-1/3 px-16 py-32 fixed left-0 top-0 bottom-0 flex flex-col mt-56 items-center">
         <div>
@@ -84,7 +83,7 @@ const ItemPage = () => {
       </div>
 
       {colorDrawer && (
-        <div className="w-1/3 h-5/6 p-12 fixed z-50 left-0 top-0 bottom-0 bg-black flex flex-col my-24 items-center">
+        <div className="w-1/3 h-5/6 p-12 absolute z-50 left-0 top-0 bottom-0 bg-black flex flex-col my-24 items-center">
           <h5 className="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400 uppercase">color</h5>
           <button 
             onClick={toggleColorDrawer}
@@ -120,7 +119,7 @@ const ItemPage = () => {
 
       {/* description */}
       {colorDrawer && (
-        <div className="mt-24 w-1/3 px-20 py-32 fixed right-0 top-0 bottom-0 z-50 flex flex-col justify-start items-center backdrop-blur-sm"></div>
+        <div className="mt-20 w-2/3 px-20 py-32 absolute right-0 top-0 bottom-0 z-50 flex flex-col justify-start items-center backdrop-blur-sm"></div>
       )}
 
       <div className="mt-24 w-1/3 px-20 py-32 fixed right-0 top-0 bottom-0 flex flex-col justify-start items-center">

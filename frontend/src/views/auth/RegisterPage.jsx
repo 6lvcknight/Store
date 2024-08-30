@@ -42,7 +42,7 @@ const RegisterPage = () => {
         setIsLoading(false)
     }
   return (
-    <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black">
+    <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black pt-24">
             <div className='w-[420px] border-[2px] border-solid border-[#B4BFC5] text-white rounded-xl p-[30px] backdrop-opacity-30'>
                 <h1 className='text-[#DEDAD7] text-[36px] text-center font-bold'>Register</h1>
                 {/*isLoading && <Spinner />*/}

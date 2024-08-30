@@ -76,3 +76,60 @@ class CartAPIView(generics.ListCreateAPIView):
             raise ValidationError({"user_id": "User not found."})
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class CartListView(generics.ListAPIView):
+    serializer_class = CartSerializer
+    permission_classes = [permissions.AllowAny]
+    queryset = Cart.objects.all()
+
+    def get_queryset(self):
+        cart_id = self.kwargs['cart_id']
+        user_id = self.kwargs.get('user_id')
+        
+        if user_id is not None:
+            user = User.objects.get
+            queryset = Cart.objects.filter(cart_id=cart_id, user=user_id)
+        else:
+            queryset = Cart.objects.filter(cart_id=cart_id)
+
+        return queryset
+    
+class CartDetailView(generics.RetrieveAPIView):
+    serializer_class = CartSerializer
+    permission_classes = [permissions.AllowAny]
+    lookup_field = 'cart_id'
+
+    def get_queryset(self):
+        cart_id = self.kwargs['cart_id']
+        user_id = self.kwargs.get('user_id')
+        
+        if user_id is not None:
+            user = User.objects.get
+            queryset = Cart.objects.filter(cart_id=cart_id, user=user_id)
+        else:
+            queryset = Cart.objects.filter(cart_id=cart_id)
+
+        return queryset
+    
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        total_shipping = 0
+        total_sub_total = 0
+        total_tax = 0
+        total_grand_total = 0
+
+        for cart_item in queryset:
+            total_shipping += cart_item.shipping_amount
+            total_sub_total += cart_item.sub_total
+            total_tax += cart_item.tax_fee
+            total_grand_total += cart_item.grand_total
+        
+        data = {
+            'shipping': total_shipping,
+            'sub_total': total_sub_total,
+            'tax_fee': total_tax,
+            'grand_total': total_grand_total,
+        }
+        return Response(data, status=status.HTTP_200_OK)
