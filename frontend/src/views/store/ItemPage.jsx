@@ -40,6 +40,14 @@ const ItemPage = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if (colorDrawer) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [colorDrawer]);
+
   const handleColorButtonClick = (event) => {
     setColor(event.target.attributes.alt.value);
     setColorDrawer(!colorDrawer);
@@ -119,7 +127,7 @@ const ItemPage = () => {
 
       {/* description */}
       {colorDrawer && (
-        <div className="mt-20 w-2/3 px-20 py-32 absolute right-0 top-0 bottom-0 z-50 flex flex-col justify-start items-center backdrop-blur-sm"></div>
+        <button onClick={toggleColorDrawer} className="cursor-default mt-20 w-2/3 absolute right-0 top-0 bottom-0 z-50 flex flex-col justify-start items-center backdrop-blur-sm"></button>
       )}
 
       <div className="mt-24 w-1/3 px-20 py-32 fixed right-0 top-0 bottom-0 flex flex-col justify-start items-center">

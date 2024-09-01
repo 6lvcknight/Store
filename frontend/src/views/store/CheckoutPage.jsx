@@ -257,6 +257,8 @@ const CheckoutPage = () => {
                           </div>
                         </div>
                       ))}
+
+                      
                         </div>
                         <div className="flex items-center flex-shrink-0 w-full mx-auto sm:w-auto">
                             <form className="flex flex-col items-center w-full md:flex-row">
