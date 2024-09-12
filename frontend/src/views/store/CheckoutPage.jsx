@@ -8,10 +8,24 @@ const CheckoutPage = () => {
     const [cart, setCart] = useState([]);
     const [cartDetail, setCartDetail] = useState([]);
 
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [fullName, setFullName] = useState('');
+
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [address, setAddress] = useState('');
+    const [apartment, setApartment] = useState('');
+    const [city, setCity] = useState('');
+    const [province, setProvince] = useState('');
+    const [postalCode, setPostalCode] = useState('');
+    const [country, setCountry] = useState('');
+
 
     const userData = UserData();
     const cart_id = CardID();
 
+    // Fetch cart data
     const fetchCartData = async (cartId, userId) => {
         const url = userId ? `store/cart/${cartId}/${userId}` : `store/cart/${cartId}`;
         try {
@@ -22,6 +36,7 @@ const CheckoutPage = () => {
         }
     }
 
+    // Fetch cart details
     const fetchCartDetail = async (cartId, userId) => {
         const url = userId ? `store/cart-detail/${cartId}/${userId}` : `store/cart-detail/${cartId}`;
         try {
@@ -31,7 +46,12 @@ const CheckoutPage = () => {
         console.error('Error:', error);
         }
     }
+    // Handle full name update when first or last name changes
+    useEffect(() => {
+        setFullName(`${firstName} ${lastName}`);
+    }, [firstName, lastName])
 
+    // Fetch data when component mounts
     if (cart_id !== null || cart_id !== undefined) {
         if (userData !== undefined) {
         useEffect(() => {
@@ -43,6 +63,66 @@ const CheckoutPage = () => {
             fetchCartData(cart_id, null);
             fetchCartDetail(cart_id, null);
         }, [])
+        }
+    }
+
+    // Handle form field changes
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        switch (name) {
+        case 'firstName':
+            setFirstName(value);
+            break;
+        case 'lastName':
+            setLastName(value);
+            break;
+        case 'email':
+            setEmail(value);
+            break;
+        case 'phone':
+            setPhone(value);
+            break;
+        case 'address':
+            setAddress(value);
+            break;
+        case 'apartment':
+            setApartment(value);
+            break;
+        case 'city':
+            setCity(value);
+            break;
+        case 'province':
+            setProvince(value);
+            break;
+        case 'postalCode':
+            setPostalCode(value);
+            break;
+        case 'country':
+            setCountry(value);
+            break;
+        default:
+            break;
+        }
+    }
+
+    const createOrder = async () => {
+        const payload = {
+            full_name: fullName,
+            email: email,
+            phone: phone,
+            address: address,
+            apartment: apartment,
+            city: city,
+            province: province,
+            postal_code: postalCode,
+            country: country,
+            cart_id: cart_id,
+            user_id: userData?.user_id,
+        }
+        try {
+            const response = await APIinstance.post('store/order/', payload);
+        } catch (error) {
+            console.error('Error:', error);
         }
     }
   return (
@@ -91,6 +171,9 @@ const CheckoutPage = () => {
                         type="email" 
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm w-full block rounded-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                         placeholder="Email" 
+                        onChange={handleChange}
+                        value={email}
+                        name='email'
                         required 
                     />
                 </div>
@@ -102,7 +185,9 @@ const CheckoutPage = () => {
             <form className="w-full">
                 <div className="mb-6">
                     <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                            defaultValue={null}
+                            onChange={handleChange}
+                            value={country}
+                            name='country'
                             required>
                         <option value="" disabled >Country</option>
                         <option value="Canada">Canada</option>
@@ -115,6 +200,9 @@ const CheckoutPage = () => {
                             type="text" 
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                             placeholder="First Name" 
+                            onChange={handleChange}
+                            value={firstName}
+                            name='firstName'
                             required 
                         />
                     </div>
@@ -123,6 +211,9 @@ const CheckoutPage = () => {
                             type="text" 
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                             placeholder="Last Name" 
+                            onChange={handleChange}
+                            value={lastName}
+                            name='lastName'
                             required 
                         />
                     </div>
@@ -132,6 +223,9 @@ const CheckoutPage = () => {
                         type="text" 
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                         placeholder="Address" 
+                        onChange={handleChange}
+                        value={address}
+                        name='address'
                         required 
                     />
                 </div>
@@ -140,6 +234,9 @@ const CheckoutPage = () => {
                         type="text" 
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                         placeholder="Apartment, Suite, Etc. (Optional)"
+                        onChange={handleChange}
+                        value={apartment}
+                        name='apartment'
                     />
                 </div> 
                 <div className="grid gap-6 mb-6 md:grid-cols-3">
@@ -148,18 +245,23 @@ const CheckoutPage = () => {
                             type="text" 
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                             placeholder="City" 
+                            onChange={handleChange}
+                            value={city}
+                            name='city'
                             required 
                         />
                     </div> 
                     <div>
                         <select 
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                            defaultValue={null}
+                            onChange={handleChange} 
+                            value={province}
+                            name='province'
                             required
                         >
                             <option value="" disabled>Province</option>
-                            <option value="on">Ontario</option>
-                            <option value="qc">Quebec</option>
+                            <option value="Ontario">Ontario</option>
+                            <option value="Quebec">Quebec</option>
                         </select>
                     </div> 
                     <div>
@@ -167,6 +269,9 @@ const CheckoutPage = () => {
                             type="text" 
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                             placeholder="Postal Code" 
+                            onChange={handleChange}
+                            value={postalCode}
+                            name='postalCode'
                             required 
                         />
                     </div> 
@@ -176,7 +281,9 @@ const CheckoutPage = () => {
                         type="tel" 
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                         placeholder="Phone" 
-                        pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" 
+                        onChange={handleChange}
+                        value={phone}
+                        name='phone'
                         required 
                     />
                 </div>
@@ -187,6 +294,7 @@ const CheckoutPage = () => {
                     </button>
                 <button 
                     type="submit" 
+                    onClick={createOrder}
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium  text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                     Submit

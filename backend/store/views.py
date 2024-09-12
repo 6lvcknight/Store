@@ -175,3 +175,91 @@ class CartItemDeleteAPIView(generics.DestroyAPIView):
             cart = Cart.objects.get(id=item_id, cart_id=cart_id)
 
         return cart
+    
+class CartOrderAPIView(generics.CreateAPIView):
+    serializer_class = CartOrderSerializer
+    queryset = CartOrder.objects.all()
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request):
+        payload = request.data
+
+        full_name = payload['full_name']
+        email = payload['email']
+        phone = payload['phone']
+        address = payload['address']
+        apartment = payload['apartment']
+        city = payload['city']
+        province = payload['province']
+        postal_code = payload['postal_code']
+        country = payload['country']
+        cart_id = payload['cart_id']
+        user_id = payload['user_id']
+
+        if user_id != 0:
+            user = User.objects.get(id=user_id)
+        else:
+            user = None
+
+        cart_items = Cart.objects.filter(cart_id=cart_id)
+
+        total_shipping = Decimal(0.00)
+        total_sub_total = Decimal(0.00)
+        total_tax = Decimal(0.00)
+        total_total = Decimal(0.00)
+
+        order = CartOrder.objects.create(
+            buyer=user,
+            payment_status="processing",
+            full_name=full_name,
+            email=email,
+            phone=phone,
+            address=address,
+            apartment=apartment,
+            city=city,
+            province=province,
+            postal_code=postal_code,
+            country=country,
+        )
+
+        for c in cart_items:
+            CartOrderItem.objects.create(
+                order=order,
+                product=c.product,
+                qty=c.qty,
+                color=c.color,
+                size=c.size,
+                price=c.price,
+                sub_total=c.sub_total,
+                shipping_amount=c.shipping_amount,
+                tax_fee=c.tax_fee,
+                total=c.total,
+                vendor=c.product.vendor,
+            )
+
+            total_shipping += Decimal(c.shipping_amount)
+            total_sub_total += Decimal(c.sub_total)
+            total_tax += Decimal(c.tax_fee)
+            total_total += Decimal(c.total)
+
+            order.vendor.add(c.product.vendor)
+        
+        order.shipping_amount = total_shipping
+        order.sub_total = total_sub_total
+        order.tax_fee = total_tax
+        order.total = total_total
+
+        order.save()
+
+        return Response(CartOrderSerializer(order).data, status=status.HTTP_201_CREATED)
+    
+class CheckoutView(generics.RetrieveAPIView):
+    serializer_class = CartOrderSerializer
+    lookup_field = 'order_oid'
+
+    def get_object(self):
+        order_oid = self.kwargs['order_oid']
+        return CartOrder.objects.get(oid=order_oid)
+    
+
+        

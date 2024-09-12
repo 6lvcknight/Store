@@ -162,19 +162,17 @@ class CartOrder(models.Model):
 
     price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
 
-    sub_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    shipping_amount = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    tax_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    #service_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    total_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    grand_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    sub_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    shipping_amount = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    tax_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
 
     payment_status = models.CharField(choices=PAYMENT_STATUS, max_length=100, default='pending')
     order_status = models.CharField(choices=ORDER_STATUS, max_length=100, default='pending')
 
     # Coupons
-    initial_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    saved = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    initial_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    saved = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
 
     # Bio Data
     full_name = models.CharField(max_length=100, null=True, blank=True)
@@ -183,10 +181,11 @@ class CartOrder(models.Model):
 
     # Address
     address = models.TextField(max_length=100, null=True, blank=True)
+    apartment = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
-    state = models.CharField(max_length=100, null=True, blank=True)
+    province = models.CharField(max_length=100, null=True, blank=True)
     country = models.CharField(max_length=100, null=True, blank=True)
-    zip = models.CharField(max_length=100, null=True, blank=True)
+    postal_code = models.CharField(max_length=100, null=True, blank=True)
     
     oid = ShortUUIDField(unique=True, length=20, prefix="ORDER", alphabet="abcdefghijklmnopqrstuvwxyz0123456789")
     date = models.DateTimeField(auto_now_add=True)
@@ -202,20 +201,20 @@ class CartOrderItem(models.Model):
 
     qty = models.PositiveIntegerField(default=0)
     price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    sub_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    shipping_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    tax_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    service_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    total_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+
+    sub_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    shipping_amount = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    tax_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
 
     size = models.CharField(max_length=100, null=True, blank=True)
     color = models.CharField(max_length=100, null=True, blank=True)
 
     # Coupons
-    initial_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    saved = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    initial_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    saved = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
 
-    oid = ShortUUIDField(unique=True, length=20, prefix="ORDER", alphabet="abcdefghijklmnopqrstuvwxyz0123456789")
+    oid = ShortUUIDField(unique=True, length=20, prefix="ORDERITEM", alphabet="abcdefghijklmnopqrstuvwxyz0123456789")
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

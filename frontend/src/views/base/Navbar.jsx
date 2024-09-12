@@ -69,6 +69,19 @@ const Navbar = () => {
       }
   }
 
+  const handleDeleteCartItem = async (itemId) => {
+    const url = userData?.user_id 
+      ? `store/cart-delete/${cart_id}/${itemId}/${userData?.user_id }` 
+      : `store/cart-delete/${cart_id}/${itemId}/`;
+    try {
+      const response = await APIinstance.delete(url);
+      console.log(response.data);
+      setCartUpdated(prev => !prev);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   return (
     <>
@@ -291,7 +304,7 @@ const Navbar = () => {
                               <p className="text-sm text-gray-500 dark:text-gray-400">{item.qty} x {item.price}</p>
                             </div>
                           </div>
-                          <button className="text-gray-500 hover:text-white text-xs font-medium uppercase">
+                          <button onClick={() => handleDeleteCartItem(item.id)} className="text-gray-500 hover:text-white text-xs font-medium uppercase">
                             REMOVE
                           </button>
                         </div>
