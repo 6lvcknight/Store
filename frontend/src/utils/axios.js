@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BASE_URL } from './constants';
 
-const instance = axios.create({
+const APIinstance = axios.create({
     baseURL: BASE_URL,
     timeout: 100000, // timeout after 5 seconds
     headers: {
@@ -10,4 +10,4 @@ const instance = axios.create({
     }
 });
 
-export default instance;
+export default APIinstance;

@@ -1,7 +1,7 @@
 from django.urls import path
 
 from userauths.views import MyTokenObtainPairView, RegisterView, PasswordResetEmailVerify, PasswordChangeView
-from store.views import CategoryListAPIView, ProductListAPIView, ProductDetailAPIView, CartAPIView, CartListView, CartDetailView
+from store.views import CategoryListAPIView, ProductListAPIView, ProductDetailAPIView, CartAPIView, CartListView, CartDetailView, CartItemDeleteAPIView
 
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -21,4 +21,6 @@ urlpatterns = [
     path('store/cart/<str:cart_id>/', CartListView.as_view(), name='cart_list'),
     path('store/cart-detail/<str:cart_id>/<int:user_id>/', CartDetailView.as_view(), name='cart_detail'),
     path('store/cart-detail/<str:cart_id>/', CartDetailView.as_view(), name='cart_detail'),
+    path('store/cart-delete/<str:cart_id>/<int:item_id>/<int:user_id>/', CartItemDeleteAPIView.as_view(), name='cart_delete'),
+    path('store/cart-delete/<str:cart_id>/<int:item_id>/', CartItemDeleteAPIView.as_view(), name='cart_delete'),
 ]

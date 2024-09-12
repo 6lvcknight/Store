@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { RectangleEllipsis } from 'lucide-react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import instance from '../../utils/axios';
+import APIinstance from '../../utils/axios';
 
 
 const ChangePassPage = () => {
@@ -27,7 +27,7 @@ const ChangePassPage = () => {
             formdata.append('uidb64', uidb64);
 
             try {
-                const response = await instance.post('user/password-reset/', formdata);
+                const response = await APIinstance.post('user/password-reset/', formdata);
                 console.log('Response:', response);
 
                 alert('Password changed successfully');

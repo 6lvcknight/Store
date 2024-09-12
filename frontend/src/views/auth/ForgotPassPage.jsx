@@ -1,6 +1,6 @@
 import { Mail } from 'lucide-react';
 import React, { useState } from 'react';
-import instance from '../../utils/axios';
+import APIinstance from '../../utils/axios';
 
 const ForgotPassPage = () => {
     const [email, setEmail] = useState('');
@@ -11,7 +11,7 @@ const ForgotPassPage = () => {
         e.preventDefault();
 
         try {
-            const response = await instance.get(`user/password-reset-email/${email}/`);
+            const response = await APIinstance.get(`user/password-reset-email/${email}/`);
             console.log(response);
             setMessage('A password reset link has been sent to your email.');
             setError(null);

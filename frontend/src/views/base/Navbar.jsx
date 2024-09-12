@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useAuthStore from '../../store/auth';
 import { Link } from 'react-router-dom';
-import instance from '../../utils/axios';
+import APIinstance from '../../utils/axios';
 import UserData from '../plugin/UserData';
 import CardID from '../plugin/CardID';
 
@@ -9,6 +9,12 @@ const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isCheckoutDrawerOpen, setIsCheckoutDrawerOpen] = useState(false);
+  const [cartUpdated, setCartUpdated] = useState(false);
+
+  const [cart, setCart] = useState([]);
+  const [cartDetail, setCartDetail] = useState([]);
+  const userData = UserData();
+  const cart_id = CardID();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -20,6 +26,7 @@ const Navbar = () => {
 
   const toggleCheckoutDrawer = () => {
     setIsCheckoutDrawerOpen(!isCheckoutDrawerOpen);
+    setCartUpdated(prev => !prev);
   };
 
   const [isLoggedIn, user] = useAuthStore((state) => [
@@ -27,31 +34,41 @@ const Navbar = () => {
     state.user,
   ]);
 
-  const [cart, setCart] = useState([]);
-    const userData = UserData();
-    const cart_id = CardID();
-
-    const fetchCartData = async (cartId, userId) => {
-        const url = userId ? `store/cart/${cartId}/${userId}` : `store/cart/${cartId}`;
-        try {
-        const response = await instance.get(url);
+  const fetchCartData = async (cartId, userId) => {
+      const url = userId ? `store/cart/${cartId}/${userId}` : `store/cart/${cartId}`;
+      try {
+        const response = await APIinstance.get(url);
         setCart(response.data);
-        } catch (error) {
+      } catch (error) {
         console.error('Error:', error);
-        }
-    }
+      }
+  }
 
-    if (cart_id !== null || cart_id !== undefined) {
-        if (userData!== undefined) {
-        useEffect(() => {
-            fetchCartData(cart_id, userData?.user_id);
-        }, [])
-        } else {
-        useEffect(() => {
-            fetchCartData(cart_id, null);
-        }, [])
-        }
+  const fetchSubTotal = async (cartId, userId) => {
+    const url = userId ? `store/cart-detail/${cartId}/${userId}` : `store/cart-detail/${cartId}`;
+    try {
+      const response = await APIinstance.get(url);
+      setCartDetail(response.data);
+    } catch (error) {
+      console.error('Error:', error);
     }
+  };
+
+
+  if (cart_id !== null || cart_id !== undefined) {
+      if (userData!== undefined) {
+      useEffect(() => {
+          fetchCartData(cart_id, userData?.user_id);
+          fetchSubTotal(cart_id, userData?.user_id);
+      }, [cartUpdated])
+      } else {
+      useEffect(() => {
+          fetchCartData(cart_id, null);
+          fetchSubTotal(cart_id, null);
+      }, [cartUpdated])
+      }
+  }
+
 
   return (
     <>
@@ -72,11 +89,13 @@ const Navbar = () => {
                     <div className="fixed mt-4 top-16 left-0 z-50 w-full bg-white border-gray-200 shadow-sm border-b dark:bg-black dark:border-gray-600">
                       <div className="grid px-4 py-5 mx-auto text-sm text-gray-500 dark:text-gray-400 md:grid-cols-3 md:px-6">
                         <ul className="space-y-4 sm:mb-4 md:mb-0" aria-labelledby="mega-menu-full-cta-dropdown-button">
-                          <li>
-                            <a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-                              Online Stores
-                            </a>
-                          </li>
+                          <Link to='/product'>
+                            <li>
+                              <button className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+                                Products
+                              </button>
+                            </li>
+                          </Link>
                           <li>
                             <a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
                               Segmentation
@@ -272,10 +291,8 @@ const Navbar = () => {
                               <p className="text-sm text-gray-500 dark:text-gray-400">{item.qty} x {item.price}</p>
                             </div>
                           </div>
-                          <button className="text-gray-400 hover:text-gray-900 dark:hover:text-gray-300">
-                            <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
+                          <button className="text-gray-500 hover:text-white text-xs font-medium uppercase">
+                            REMOVE
                           </button>
                         </div>
                         ))}
@@ -285,7 +302,7 @@ const Navbar = () => {
                     <div className="w-full mt-auto mb-8">
                       <div className="flex items-center justify-between">
                         <h6 className="text-sm font-semibold text-gray-900 dark:text-gray-300 uppercase">Subtotal</h6>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">$44.98</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">$ {cartDetail.sub_total}</p>
                       </div>
                       <Link to='/checkout'>
                         <button className="w-full mt-4 text-white bg-blue-600 hover:bg-blue-700 font-semibold text-sm py-3 uppercase">

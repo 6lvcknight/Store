@@ -41,7 +41,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
     old_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    shipping_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    shipping_amount = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
 
     stock_qty = models.PositiveIntegerField(default=1)
     in_stock = models.BooleanField(default=True)
@@ -121,19 +121,17 @@ class Color(models.Model):
     
 
 class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    qty = models.PositiveIntegerField(default=0)
+    qty = models.PositiveIntegerField(default=0,null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
 
-    price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
 
-    sub_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    shipping_amount = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    tax_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    #service_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    total_price = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
-    grand_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00)
+    sub_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    shipping_amount = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    tax_fee = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
+    total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
 
     country = models.CharField(max_length=100, null=True, blank=True)
 
@@ -142,7 +140,7 @@ class Cart(models.Model):
     cart_id = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
-        return self.product.title
+        return f'{self.cart_id} - {self.product.title}'
     
 class CartOrder(models.Model):
 

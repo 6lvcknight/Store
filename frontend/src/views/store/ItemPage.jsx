@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import instance from '../../utils/axios';
+import APIinstance from '../../utils/axios';
 
 import GetCurrentAddress from '../plugin/UserCountry';
 import UserData from '../plugin/UserData';
@@ -16,8 +16,10 @@ const ItemPage = () => {
 
   const param = useParams();
   const address = GetCurrentAddress();
+
   const userData = UserData();
   const cart_id = CardID();
+
 
   const toggleColorDrawer = () => {
     setColorDrawer(!colorDrawer);
@@ -28,7 +30,7 @@ const ItemPage = () => {
   };
 
   useEffect(() => {
-    instance.get(`store/product-detail/${param.slug}`)
+    APIinstance.get(`store/product-detail/${param.slug}`)
       .then(res => {
         setProduct(res.data);
         if (res.data.color && res.data.color.length > 0) {
@@ -60,22 +62,24 @@ const ItemPage = () => {
 
   const handleToCart = async () => {
     try {
-        const formdata = new FormData();
-
-        formdata.append("product_id", product.id);
-        formdata.append("user_id", userData?.user_id);
-        formdata.append('qty', quantity);
-        formdata.append('price', product.price);
-        formdata.append('shipping_amount', product.shipping_amount);
-        formdata.append('country', address.country);
-        formdata.append('size', size);
-        formdata.append('color', color);
-        formdata.append('cart_id', cart_id);
-
-        const response = await instance.post('store/cart/', formdata);
-        console.log(response.data);
+      const payload = {
+        product: product.id,
+        user: userData?.user_id,
+        qty: quantity,
+        price: parseFloat(product.price),
+        shipping_amount: parseFloat(product.shipping_amount),
+        country: address.country,
+        size: size,
+        color: color,
+        cart_id: cart_id,
+      };
+  
+      console.log("Payload:", payload);  // Debug log
+  
+      const response = await APIinstance.post('store/cart/', payload);
+      console.log(response.data);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
   };
 

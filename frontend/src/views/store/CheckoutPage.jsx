@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import UserData from '../plugin/UserData';
 import CardID from '../plugin/CardID';
-import instance from '../../utils/axios';
+import APIinstance from '../../utils/axios';
 
 const CheckoutPage = () => {
     const [cart, setCart] = useState([]);
-    const [cartTotal, setCartTotal] = useState([]);
+    const [cartDetail, setCartDetail] = useState([]);
 
 
     const userData = UserData();
@@ -15,33 +15,33 @@ const CheckoutPage = () => {
     const fetchCartData = async (cartId, userId) => {
         const url = userId ? `store/cart/${cartId}/${userId}` : `store/cart/${cartId}`;
         try {
-        const response = await instance.get(url);
+        const response = await APIinstance.get(url);
         setCart(response.data);
         } catch (error) {
         console.error('Error:', error);
         }
     }
 
-    const fetchCartTotal = async (cartId, userId) => {
+    const fetchCartDetail = async (cartId, userId) => {
         const url = userId ? `store/cart-detail/${cartId}/${userId}` : `store/cart-detail/${cartId}`;
         try {
-        const response = await instance.get(url);
-        setCartTotal(response.data);
+        const response = await APIinstance.get(url);
+        setCartDetail(response.data);
         } catch (error) {
         console.error('Error:', error);
         }
     }
 
     if (cart_id !== null || cart_id !== undefined) {
-        if (userData!== undefined) {
+        if (userData !== undefined) {
         useEffect(() => {
             fetchCartData(cart_id, userData?.user_id);
-            fetchCartTotal(cart_id, userData?.user_id);
+            fetchCartDetail(cart_id, userData?.user_id);
         }, [])
         } else {
         useEffect(() => {
             fetchCartData(cart_id, null);
-            fetchCartTotal(cart_id, null);
+            fetchCartDetail(cart_id, null);
         }, [])
         }
     }
@@ -105,7 +105,7 @@ const CheckoutPage = () => {
                             defaultValue={null}
                             required>
                         <option value="" disabled >Country</option>
-                        <option value="ca">Canada</option>
+                        <option value="Canada">Canada</option>
                         <option value="us">United States</option>
                     </select>
                 </div> 
@@ -238,33 +238,50 @@ const CheckoutPage = () => {
         </div>
 
         <div className='w-1/3'>
-                <div className='fixed top-0 right-0 z-40 h-screen overflow-y-auto transition-transform translate-x-0 bg-white w-1/3 dark:bg-black' tabIndex="-1" aria-labelledby="drawer-right-label">
-                  <div className="flex flex-col items-center justify-between h-full pt-12 pl-12 pr-12">
-                    <div className="w-full">
-                      <div className="grid gap-4 mt-4">
-                      {cart?.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <img
-                              src={item.product.image}
-                              alt="Product 01"
-                              className="w-16 object-cover rounded-sm"
-                            />
-                            <div>
-                              <h6 className="text-sm font-semibold text-gray-900 dark:text-gray-300">{item.product.title}</h6>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">{item.qty} x {item.price}</p>
+            <div className='fixed top-0 right-0 z-40 h-screen overflow-y-auto transition-transform translate-x-0 bg-white w-1/3 dark:bg-black' tabIndex="-1" aria-labelledby="drawer-right-label">
+                <div className="flex flex-col items-center justify-between h-full pt-12 pl-12 pr-12">
+                    <div className="">
+                        <div className="grid gap-4 mt-4">
+                        {cart?.map((item, index) => (
+                            <div key={index} className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <img
+                                    src={item.product.image}
+                                    alt="Product 01"
+                                    className="w-16 object-cover rounded-sm"
+                                    />
+                                    <div>
+                                        <h6 className="text-sm font-semibold text-gray-900 dark:text-gray-300">{item.product.title}</h6>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">{item.qty} x {item.price}</p>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
+                        ))}
                         </div>
-                      ))}
-
-                      
-                        </div>
-                        <div className="flex items-center flex-shrink-0 w-full mx-auto sm:w-auto">
+                        <div className="flex items-center flex-shrink-0 w-full mx-auto sm:w-auto m-6">
                             <form className="flex flex-col items-center w-full md:flex-row">
-                                <input type="email" placeholder="Discount" className="bg-white border border-gray-300 text-gray-900 md:w-64 mb-2 md:mb-0 md:me-4 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                <input type="text" placeholder="Discount" className="bg-white border border-gray-300 text-gray-900 md:w-64 mb-2 md:mb-0 md:me-4 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
                                 <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">APPLY</button>
                             </form>
+                        </div>
+                        <div>
+                            <div className="flex mb-2 items-center justify-between">
+                                <h6 className="text-sm font-semibold text-gray-900 dark:text-gray-300 uppercase">Subtotal</h6>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">$ {cartDetail.sub_total}</p>
+                            </div>
+                            <div className="flex mb-2 items-center justify-between">
+                                <h6 className="text-sm font-semibold text-gray-900 dark:text-gray-300 uppercase">Shipping</h6>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">$ {cartDetail.shipping}</p>
+                            </div>
+                            <div className="flex mb-2 items-center justify-between">
+                                <h6 className="text-sm font-semibold text-gray-900 dark:text-gray-300 uppercase">Tax</h6>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">$ {cartDetail.tax_fee}</p> 
+                            </div>
+                            <hr className="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                            <div className="flex items-center justify-between">
+                                <h6 className="text-sm font-semibold text-gray-900 dark:text-gray-300 uppercase">Total</h6>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">$ {cartDetail.total}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

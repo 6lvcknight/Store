@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import instance from '../../utils/axios'
+import APIinstance from '../../utils/axios'
 import { Link } from 'react-router-dom'
 
 const ProductPage = () => {
@@ -8,7 +8,7 @@ const ProductPage = () => {
     const [category, setCategory] = useState([])
 
     useEffect(() => {
-        instance.get('store/product/')
+      APIinstance.get('store/product/')
             .then(res => {
                 setProduct(res.data)
             })
@@ -18,7 +18,7 @@ const ProductPage = () => {
     },[])
 
     useEffect(() => {
-      instance.get('store/category/')
+      APIinstance.get('store/category/')
           .then(res => {
               setCategory(res.data)
           })

@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Category, Coupon, Notification, Product, Gallery, ProductFaq, Review, Specification, Size, Color, Cart, CartOrder, CartOrderItem, Wishlist, Tax
-from .forms import LocationForm
 
 # Register your models here.
 class GalleryInline(admin.TabularInline):
@@ -16,7 +15,7 @@ class ColorInline(admin.TabularInline):
     model = Color
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['title', 'price', 'shipping_price', 'stock_qty', 'in_stock', 'vendor', 'featured']
+    list_display = ['title', 'price', 'shipping_amount', 'stock_qty', 'in_stock', 'vendor', 'featured']
     search_fields = ['title', 'price', 'stock_qty', 'featured']
     list_filter = ['date']
     list_editable = ['featured']
@@ -58,7 +57,6 @@ class CartAdmin(admin.ModelAdmin):
     list_display = ['cart_id']
 
 class TaxAdmin(admin.ModelAdmin):
-    form = LocationForm
     list_display = ('country', 'province', 'rate', 'active', 'date')
 
 
