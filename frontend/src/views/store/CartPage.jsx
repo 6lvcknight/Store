@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import APIinstance from '../../utils/axios';
 import UserData from '../plugin/UserData';
 import CardID from '../plugin/CardID';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import GetCurrentAddress from '../plugin/UserCountry';
 
 const CartPage = () => {
