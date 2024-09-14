@@ -192,6 +192,9 @@ class CartOrder(models.Model):
 
     def __str__(self):
         return self.oid
+    
+    def orderitem(self):
+        return CartOrderItem.objects.filter(order=self)
 
 
 class CartOrderItem(models.Model):
@@ -211,6 +214,7 @@ class CartOrderItem(models.Model):
     color = models.CharField(max_length=100, null=True, blank=True)
 
     # Coupons
+    coupon = models.ManyToManyField('Coupon', blank=True)
     initial_total = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
     saved = models.DecimalField(decimal_places=2, max_digits=12, default=0.00, null=True, blank=True)
 
@@ -219,6 +223,8 @@ class CartOrderItem(models.Model):
 
     def __str__(self):
         return self.oid
+    
+    
     
 # Might/Might not be needed
 class ProductFaq(models.Model):

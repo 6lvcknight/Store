@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import UserData from '../plugin/UserData';
 import CardID from '../plugin/CardID';
 import APIinstance from '../../utils/axios';
+import { useNavigate } from 'react-router-dom';
 
 const CheckoutPage = () => {
     const [cart, setCart] = useState([]);
@@ -24,6 +25,7 @@ const CheckoutPage = () => {
 
     const userData = UserData();
     const cart_id = CardID();
+    const navigate = useNavigate();
 
     // Fetch cart data
     const fetchCartData = async (cartId, userId) => {
@@ -121,6 +123,7 @@ const CheckoutPage = () => {
         }
         try {
             const response = await APIinstance.post('store/order/', payload);
+            navigate(`/shipping/${response.data.oid}`);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -292,8 +295,8 @@ const CheckoutPage = () => {
                     <button className=''>
                         <Link to="/cart" className="text-gray-500 hover:text-gray-900 dark:hover:text-white">Back to Cart</Link>
                     </button>
-                <button 
-                    type="submit" 
+                <button
+                    type="button"
                     onClick={createOrder}
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium  text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >

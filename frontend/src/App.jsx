@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, useLocation, matchPath } from 'react-router-dom'
 
 import MainWrapper from './layout/MainWrapper'
 
@@ -19,6 +19,7 @@ import ProductPage from './views/store/ProductPage';
 import ItemPage from './views/store/ItemPage';
 import CheckoutPage from './views/store/CheckoutPage';
 import CartPage from './views/store/CartPage';
+import ShippingPage from './views/store/ShippingPage';
 
 const App = () => {
   return (
@@ -32,10 +33,17 @@ const App = () => {
 
 const AppContent = () => {
   const location = useLocation();
-  const hideNavbarRoutes = ['/checkout'];
-  const hideFooterRoutes = ['/login', '/register', "/logout", "/password-reset", "/password-reset/:otp/:uidb64", '/checkout'];
-  const isNavbarVisible = !hideNavbarRoutes.includes(location.pathname);
-  const isFooterVisible = !hideFooterRoutes.includes(location.pathname);
+
+  // Define the routes where the Navbar and Footer should be hidden
+  const hideNavbarRoutes = ['/checkout', '/shipping/:order_oid/'];
+  const hideFooterRoutes = ['/login', '/register', '/logout', '/password-reset', '/password-reset/:otp/:uidb64', '/checkout', '/shipping/:order_oid/'];
+
+  // Helper function to check if the current path matches any of the defined paths
+  const isPathMatching = (paths) => paths.some((path) => matchPath(path, location.pathname));
+
+  // Determine whether to show the Navbar and Footer based on the current path
+  const isNavbarVisible = !isPathMatching(hideNavbarRoutes);
+  const isFooterVisible = !isPathMatching(hideFooterRoutes);
 
   return (
     <div className="flex flex-col h-screen">
@@ -48,9 +56,9 @@ const AppContent = () => {
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path='/checkout' element={<CheckoutPage />} />
+          <Route path='/shipping/:order_oid/' element={<ShippingPage />} />
           <Route path="/password-reset" element={<ForgotPassPage />} />
           <Route path="/password-reset/:otp/:uidb64" element={<ChangePassPage />} />
-
           <Route path="/product" element={<ProductPage />} />
           <Route path="/product/:slug" element={<ItemPage />} />
         </Routes>
