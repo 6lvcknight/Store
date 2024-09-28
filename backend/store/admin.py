@@ -67,6 +67,7 @@ admin.site.register(Cart, CartAdmin)
 admin.site.register(CartOrder)
 admin.site.register(CartOrderItem)
 
+admin.site.register(Coupon, CouponAdmin)
 admin.site.register(Review)
 admin.site.register(Tax, TaxAdmin)
 

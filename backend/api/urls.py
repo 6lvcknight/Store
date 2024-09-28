@@ -1,7 +1,7 @@
 from django.urls import path
 
 from userauths.views import MyTokenObtainPairView, RegisterView, PasswordResetEmailVerify, PasswordChangeView
-from store.views import CategoryListAPIView, ProductListAPIView, ProductDetailAPIView, CartAPIView, CartListView, CartDetailView, CartItemDeleteAPIView, CartOrderAPIView, CheckoutView
+from store.views import CategoryListAPIView, ProductListAPIView, ProductDetailAPIView, CartAPIView, CartListView, CartDetailView, CartItemDeleteAPIView, CartOrderAPIView, CheckoutView, CouponAPIView
 
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -29,4 +29,5 @@ urlpatterns = [
     
     path('store/order/', CartOrderAPIView.as_view(), name='order'),
     path('store/checkout/<order_oid>/', CheckoutView.as_view(), name='checkout'),
+    path('store/coupon/', CouponAPIView.as_view(), name='coupon'),
 ]

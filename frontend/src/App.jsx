@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Route, Routes, useLocation, matchPath } from 'react-router-dom'
 
-import MainWrapper from './layout/MainWrapper'
 
 import Navbar from './views/base/Navbar';
 import Footer from './views/base/Footer';
@@ -20,8 +19,14 @@ import ItemPage from './views/store/ItemPage';
 import CheckoutPage from './views/store/CheckoutPage';
 import CartPage from './views/store/CartPage';
 import ShippingPage from './views/store/ShippingPage';
+import { setUser } from './utils/auth';
+
+import { ItemSkeleton } from './views/skeleton/ItemSkeleton';
 
 const App = () => {
+  useEffect(() => {
+    setUser()
+  }, []);
   return (
     <>
     <Router>
@@ -61,6 +66,8 @@ const AppContent = () => {
           <Route path="/password-reset/:otp/:uidb64" element={<ChangePassPage />} />
           <Route path="/product" element={<ProductPage />} />
           <Route path="/product/:slug" element={<ItemPage />} />
+
+          <Route path="/skeleton" element={<ItemSkeleton />} />
         </Routes>
       </div>
       {isFooterVisible && <Footer />}

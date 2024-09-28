@@ -10,9 +10,15 @@ export default {
     extract
   },
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        '2xs': ['0.625rem',{
+          lineHeight: '0.75rem'
+        }],
+      },
+    },
   },
   plugins: [
-    require('fluid-tailwind')
+    fluid
   ],
 }

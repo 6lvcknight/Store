@@ -4,10 +4,12 @@ import UserData from '../plugin/UserData';
 import CardID from '../plugin/CardID';
 import APIinstance from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
+import useAuthStore from '../../store/auth';
 
 const CheckoutPage = () => {
     const [cart, setCart] = useState([]);
     const [cartDetail, setCartDetail] = useState([]);
+    const {coupon, setCoupon} = useState('');
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -27,6 +29,14 @@ const CheckoutPage = () => {
     const cart_id = CardID();
     const navigate = useNavigate();
 
+    // Get user data
+    const [isLoggedIn, user] = useAuthStore((state) => [
+        state.isLoggedIn,
+        state.user,
+    ]);
+
+    console.log(userData);
+
     // Fetch cart data
     const fetchCartData = async (cartId, userId) => {
         const url = userId ? `store/cart/${cartId}/${userId}` : `store/cart/${cartId}`;
@@ -34,7 +44,7 @@ const CheckoutPage = () => {
         const response = await APIinstance.get(url);
         setCart(response.data);
         } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching cart data:', error);
         }
     }
 
@@ -45,7 +55,7 @@ const CheckoutPage = () => {
         const response = await APIinstance.get(url);
         setCartDetail(response.data);
         } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching cart details:', error);
         }
     }
     // Handle full name update when first or last name changes
@@ -125,13 +135,28 @@ const CheckoutPage = () => {
             const response = await APIinstance.post('store/order/', payload);
             navigate(`/shipping/${response.data.oid}`);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error posting create order:', error);
         }
     }
+
+    /*
+    const applyCoupon = async () => {
+        const payload = {
+            order_oid: cartDetail.oid,
+            coupon_code: coupon,
+        }
+        try {
+            const response = await APIinstance.post('store/coupon/', payload);
+            console.log(response.data.message);
+        } catch (error) {
+            console.error('Error posting Discount:', error);
+        }
+    }
+    */
   return (
     <>
-        <div className='flex flex-col w-2/3 border-r h-screen pl-96 pr-56 pt-24 items-center'>
-            <h1 className='text-4xl font-semibold text-gray-900 dark:text-white mb-6 uppercase'>Facade Wrld</h1>
+        <div className='flex flex-col w-2/3 border-r h-screen 2xl:pl-96 xl:px-56 pt-24 items-center'>
+            <Link to='/' className='text-4xl font-semibold text-gray-900 dark:text-white mb-6 uppercase'>Facade Wrld</Link>
             <div className='flex mb-4'>
                 <ol className='inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse'>
                     <li className='inline-flex items-center'>
@@ -164,23 +189,35 @@ const CheckoutPage = () => {
                 </ol>
             </div>
             <div className="flex items-center justify-between w-full mb-2">
-                <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Contact</h1>
-                <Link to="/login" className="text-blue-600 hover:underline dark:text-blue-500 ml-4">Login</Link>
+                
+                {isLoggedIn ? (
+                    <div className='mb-6'>
+                        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Contact</h1>
+                        <div className=''>
+                            <h1 className='text-md font-small text-gray-900 dark:text-gray-400'>{userData.email}</h1>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Contact</h1>
+                        <Link to="/login" className="text-blue-600 hover:underline dark:text-blue-500 ml-4">Login</Link>
+                        <form className="w-full">
+                            <div className="mb-6">
+                                <input 
+                                    type="email" 
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm w-full block rounded-sm p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" 
+                                    placeholder="Email" 
+                                    onChange={handleChange}
+                                    value={email}
+                                    name='email'
+                                    required 
+                                />
+                            </div>
+                        </form>
+                    </>
+                )}
+                
             </div>
-            
-            <form className="w-full">
-                <div className="mb-6">
-                    <input 
-                        type="email" 
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm w-full block rounded-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                        placeholder="Email" 
-                        onChange={handleChange}
-                        value={email}
-                        name='email'
-                        required 
-                    />
-                </div>
-            </form>
 
             <div className="flex items-center justify-between w-full mb-2">
                 <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Shipping Address</h1>
@@ -371,8 +408,17 @@ const CheckoutPage = () => {
                         </div>
                         <div className="flex items-center flex-shrink-0 w-full mx-auto sm:w-auto m-6">
                             <form className="flex flex-col items-center w-full md:flex-row">
-                                <input type="text" placeholder="Discount" className="bg-white border border-gray-300 text-gray-900 md:w-64 mb-2 md:mb-0 md:me-4 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
-                                <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">APPLY</button>
+                                <input type="text" placeholder="Discount" 
+                                    className="bg-white border border-gray-300 text-gray-900 md:w-64 mb-2 md:mb-0 md:me-4 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    onChange={'(e) => setCoupon(e.target.value)'}
+                                    />
+                                <button
+                                    type="button"
+                                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onClick={'applyCoupon'}
+                                    >
+                                        APPLY
+                                    </button>
                             </form>
                         </div>
                         <div>

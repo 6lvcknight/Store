@@ -85,7 +85,6 @@ const ItemPage = () => {
 
   return (
     <div className="flex justify-center pt-24">
-
       <div className="w-1/3 px-16 py-32 fixed left-0 top-0 bottom-0 flex flex-col mt-56 items-center">
         <div>
           <h3 className="text-xl font-normal text-gray-500 dark:text-gray-400 uppercase">AIM FACADE</h3>
@@ -94,28 +93,30 @@ const ItemPage = () => {
         </div>
       </div>
 
-      {colorDrawer && (
-        <div className="w-1/3 h-5/6 p-12 absolute z-50 left-0 top-0 bottom-0 bg-black flex flex-col my-24 items-center">
-          <h5 className="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400 uppercase">color</h5>
-          <button 
-            onClick={toggleColorDrawer}
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white">
-            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-            </svg>
-            <span className="sr-only">Close menu</span>
-          </button>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {product.color && product.color.map((item, index) => (
-              <div key={index}>
-                <button onClick={handleColorButtonClick}>
-                  <img className="h-auto max-w-full" src={item.image} alt={item.name} />
-                </button>
-              </div>
-            ))}
-          </div>
+
+      <div className={`fixed h-5/6 p-12 z-50 left-0 top-0 bottom-0 bg-black w-1/3 flex flex-col my-24 items-center transform transition-all duration-300 ease-in-out ${
+        colorDrawer ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <h5 className="inline-flex items-center mb-4 text-base font-semibold text-gray-500 dark:text-gray-400 uppercase">color</h5>
+        <button 
+          onClick={toggleColorDrawer}
+          className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white">
+          <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+          </svg>
+          <span className="sr-only">Close menu</span>
+        </button>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {product.color && product.color.map((item, index) => (
+            <div key={index}>
+              <button onClick={handleColorButtonClick}>
+                <img className="h-auto max-w-full" src={item.image} alt={item.name} />
+              </button>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
+
 
       {/* images */}
       <div className="w-1/3 grid grid-cols-1 gap-8 overflow-y-auto mx-auto">
@@ -130,9 +131,12 @@ const ItemPage = () => {
       </div>
 
       {/* description */}
-      {colorDrawer && (
-        <button onClick={toggleColorDrawer} className="cursor-default mt-20 w-2/3 absolute right-0 top-0 bottom-0 z-50 flex flex-col justify-start items-center backdrop-blur-sm"></button>
-      )}
+        <div 
+          onClick={colorDrawer ? toggleColorDrawer : undefined} 
+          className={`bg-black transform transition-opacity duration-300 ease-in-out ${
+          colorDrawer ? 'fixed inset-0 z-40 bg-opacity-25 backdrop-blur-sm' : 'backdrop-blur-none'
+        }`}>
+        </div>
 
       <div className="mt-24 w-1/3 px-20 py-32 fixed right-0 top-0 bottom-0 flex flex-col justify-start items-center">
         <h4 className="w-full min-h-1/6 text-gray-500 dark:text-gray-400 m-2">{product.description}</h4>
@@ -157,8 +161,10 @@ const ItemPage = () => {
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
               </svg>
             </button>
-            {sizeDropdown && (
-              <div className="absolute z-50 mt-2 bg-white border border-black divide-y divide-gray-100 shadow w-full dark:bg-black dark:border-white">
+            
+              <div className={`absolute z-50 mt-2 bg-white border border-black divide-y divide-gray-100 shadow w-full dark:bg-black dark:border-white transition-all duration-300 ease-in-out transform ${
+                sizeDropdown ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+              }`}>
                 <ul className="text-sm text-gray-700 dark:text-gray-200">
                   {product.size && product.size.map((name, index) => (
                     <li key={index} onClick={() => handleSizeButtonClick(name.name)}>
@@ -167,7 +173,7 @@ const ItemPage = () => {
                   ))}
                 </ul>
               </div>
-            )}
+            
           </div>
         </div>
 

@@ -54,53 +54,46 @@ export const setUser = async () => {
         return;
     }
 
+    // If access token is expired, try to refresh it
     if (isAccessTokenExpired(access_token)) {
         try {
-            const new_access_token = await getRefreshToken();
-            setAuthUser(new_access_token, refresh_token);
-        } catch(error) {
+            const response = await getRefreshToken(refresh_token);
+            setAuthUser(response.access, response.refresh);
+        } catch (error) {
+            console.error('Error refreshing token:', error);
             logout();
         }
     } else {
         setAuthUser(access_token, refresh_token);
     }
-}
+};
 
 export const setAuthUser = (access_token, refresh_token) => {
     Cookies.set('access_token', access_token, {
-        expires: 1, // Access token expires in 1 day
-        secure: true
+        expires: 1,  // Access token expires in 1 day
+        secure: true,
     });
     Cookies.set('refresh_token', refresh_token, {
-        expires: 7, // Refresh token expires in 7 days
-        secure: true
+        expires: 7,  // Refresh token expires in 7 days
+        secure: true,
     });
 
-    let decoded = null;
-    try {
-        decoded = jwtDecode(access_token);
-    } catch (error) {
-        console.error('Failed to decode access token:', error);
-        return;
-    }
+    const user = jwtDecode(access_token) ?? null;
 
-    if (decoded) {
-        useAuthStore.getState().setUser(decoded);
+    // If user information is present, update user state; otherwise, set loading state to false
+    if (user) {
+        useAuthStore.getState().setUser(user);
     }
     useAuthStore.getState().setLoading(false);
 }
 
 export const getRefreshToken = async () => {
     const refresh_token = Cookies.get('refresh_token');
-    try {
-        const response = await axios.post('user/token/refresh/', {
-            refresh: refresh_token,
-        });
-        return response.data.access;
-    } catch (error) {
-        console.error('Failed to refresh token:', error);
-        throw error;
-    }
+    const response = await axios.post('user/token/refresh/', {
+        refresh: refresh_token,
+    });
+
+    return response.data;
 }
 
 export const isAccessTokenExpired = (access_token) => {
@@ -108,7 +101,6 @@ export const isAccessTokenExpired = (access_token) => {
         const decoded = jwtDecode(access_token);
         return decoded.exp < Date.now() / 1000;
     } catch (error) {
-        console.error('Error decoding token:', error);
         return true;
     }
 }

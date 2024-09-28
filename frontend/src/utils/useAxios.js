@@ -21,12 +21,17 @@ const useAxios = async () => {
             if (!isAccessTokenExpired(access_token)) {
                 return req;
             }
-            const response = await getRefreshToken(refresh_token);
-            setAuthUser(response.access, response.refresh);
-
-            req.headers.Authorization = `Bearer ${response.data.access}`;
-        return req;
-    });
+            try {
+                const response = await getRefreshToken(refresh_token);
+                setAuthUser(response.access, response.refresh);
+                req.headers.Authorization = `Bearer ${response.data.access}`;  // Set new access token
+            } catch (error) {
+                console.error('Error refreshing access token:', error);
+                logout();  // Log out if refreshing fails
+            }
+            return req;
+        }
+    );
 
     return instance;
 }
