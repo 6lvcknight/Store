@@ -1,6 +1,6 @@
 .env
 node_modules
 db.sqlite3
-new_env
+myenv
 .DS_Store
 facadeee.mp4
