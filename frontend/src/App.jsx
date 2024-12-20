@@ -20,6 +20,7 @@ import CheckoutPage from './views/store/CheckoutPage';
 import CartPage from './views/store/CartPage';
 import ShippingPage from './views/store/ShippingPage';
 import { setUser } from './utils/auth';
+import SearchPage from './views/store/SearchPage';
 
 import { ItemSkeleton } from './views/skeleton/ItemSkeleton';
 
@@ -66,6 +67,7 @@ const AppContent = () => {
           <Route path="/password-reset/:otp/:uidb64" element={<ChangePassPage />} />
           <Route path="/product" element={<ProductPage />} />
           <Route path="/product/:slug" element={<ItemPage />} />
+          <Route path='/search' element={<SearchPage />} />
 
           <Route path="/skeleton" element={<ItemSkeleton />} />
         </Routes>

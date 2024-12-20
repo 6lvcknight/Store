@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import useAuthStore from '../../store/auth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import APIinstance from '../../utils/axios';
 import UserData from '../plugin/UserData';
 import CardID from '../plugin/CardID';
-import { set } from 'react-hook-form';
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isCheckoutDrawerOpen, setIsCheckoutDrawerOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const [search, setSearch] = useState('');
+
   const [cartUpdated, setCartUpdated] = useState(false);
   const [cart, setCart] = useState([]);
   const [cartDetail, setCartDetail] = useState([]);
   
   const userData = UserData();
   const cart_id = CardID();
+
+  const navigate = useNavigate();
 
   // Combined toggle for Checkout Drawer and Scroll Lock
   const toggleCheckoutDrawer = () => {
@@ -53,10 +59,14 @@ const Navbar = () => {
 
   // Fetch cart data and subtotal when the cart is updated
   useEffect(() => {
-    if (cart_id) {
+    if (isLoggedIn() && cart_id) {
       const userId = userData?.user_id || null;
       fetchCartData(cart_id, userId);
       fetchSubTotal(cart_id, userId);
+    } else {
+      // Clear the cart if no user is logged in
+      setCart([]);
+      setCartDetail([]);
     }
   }, [cartUpdated]);
 
@@ -74,7 +84,6 @@ const Navbar = () => {
   };
 
   // Handle mouse enter and leave events for the account button dropdown
-  // Handle mouse enter and leave events for the account button dropdown
   const handleAccountMouseEnter = () => setIsUserDropdownOpen(true)
   const handleAccountMouseLeave = () => setIsUserDropdownOpen(false)
 
@@ -82,9 +91,39 @@ const Navbar = () => {
   const handleMenuMouseEnter = () => setIsDropdownOpen(true)
   const handleMenuMouseLeave = () => setIsDropdownOpen(false)
 
+  // Handle mouse enter and leave events for the search button dropdown
+  const handleSearchMouseEnter = () => setIsSearchDropdownOpen(true)
+  const handleSearchMouseLeave = () => setIsSearchDropdownOpen(false)
+
+  // handle vanishing navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // handle search functionality
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  }
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    navigate(`/search?query=${search}`);
+  }
+
   return (
     <>
-      <nav className="bg-white border-gray-200 dark:bg-black fixed top-0 left-0 w-full z-50 pt-4">
+      <nav
+        className={`fixed top-0 left-0 w-full z-50 pt-4 transition-all duration-300 ${
+          isScrolled ? 'bg-black/80 backdrop-blur-md text-white' : 'bg-transparent text-white'
+        }`}
+      >
         <div className="max-w-screen-xl flex items-center justify-between mx-auto pt-2 pb-4 m-2">
           <div className="absolute left-0 flex items-center ml-12">
             <ul className="flex flex-col md:flex-row md:space-x-8 rtl:space-x-reverse">
@@ -96,27 +135,34 @@ const Navbar = () => {
                   AIM
                 </div>
 
-                {isDropdownOpen && ( <div className="fixed inset-0 bg-black bg-opacity-50 top-20 z-40"></div> )}
-
                 <div 
                   onMouseEnter={handleMenuMouseEnter}
                   onMouseLeave={handleMenuMouseLeave}
-                  className={`fixed pt-4 top-16 px-12 left-0 z-50 w-full bg-white border-gray-200 shadow-sm dark:bg-black transition-all duration-300 ease-in-out transform ${
-                    isDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+                  className={`fixed pt-[40px] px-12 left-0 z-50 w-full h-screen transition-all duration-300 ease-in-out transform ${
+                    isDropdownOpen ? 'translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
                   }`}
+                  style={{top: '60px'}}
                 >
-                  {/* Dropdown content */}
-                  <div className="grid py-5 mx-auto text-sm text-gray-500 dark:text-gray-400 md:grid-cols-3">
-                      <ul className="space-y-4 sm:mb-4 md:mb-0">
-                        <Link to='/product'>
-                          <li>
-                            <button className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-                              Products
-                            </button>
-                          </li>
-                        </Link>
-                      </ul>
+
+                  <div 
+                    className="relative opacity-100 backdrop-blur-2xl bg-black/20 w-screen h-screen"
+                    style={{left: '-48px', top: '-4px'}}
+                  >
+                    {/* Dropdown content */}
+                    <div className="grid py-5 mx-auto text-sm text-white md:grid-cols-3">
+                        <ul className="space-y-4 sm:mb-4 md:mb-0">
+                          <Link to='/product'>
+                            <li>
+                              <button className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+                                Products
+                              </button>
+                            </li>
+                          </Link>
+                        </ul>
+                    </div>
                   </div>
+
+                  
                 </div>
               </li>
             </ul>
@@ -127,7 +173,32 @@ const Navbar = () => {
           </a>
 
           <div className="absolute right-0 flex items-center space-x-3 mr-12">
-            <div className='text-sm p-2 dark:text-white hover:underline'>Search</div>
+            <div 
+              onMouseEnter={handleSearchMouseEnter}
+              onMouseLeave={handleSearchMouseLeave}
+              className='text-sm p-2 dark:text-white hover:underline'>Search
+            </div>
+
+            <div 
+              onMouseEnter={handleSearchMouseEnter}
+              onMouseLeave={handleSearchMouseLeave}
+              className={`absolute left-1/2 -translate-x-2/3 w-80 top-full z-50 shadow-lg transition-all duration-300 ease-in-out rounded-sm transform ${
+              isSearchDropdownOpen ? 'opacity-100 backdrop-blur-2xl bg-black/40 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
+              <div className="w-full py-5 text-sm text-gray-500 dark:text-gray-400">
+                <form 
+                  className="flex items-center justify-between w-full px-4"
+                  onSubmit={handleSearchSubmit}>
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    className="w-full text-sm text-white bg-transparent focus:outline-none"
+                    value={search}
+                    onChange={handleSearchChange}
+                  />
+                </form>
+              </div>
+            </div>
+
             {isLoggedIn() ? (
               <>
                 <div className="relative">
@@ -139,33 +210,33 @@ const Navbar = () => {
                     Account
                   </div>
 
-                    <div
-                      onMouseEnter={handleAccountMouseEnter}
-                      onMouseLeave={handleAccountMouseLeave}
-                      className={`absolute pt-2 top-full z-50 bg-white dark:bg-black shadow-lg transition-all duration-300 ease-in-out transform ${
-                        isUserDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
-                      }`}
-                    >
-                      <div className="w-full py-5 text-sm text-gray-500 dark:text-gray-400">
-                        <ul className="space-y-4 sm:mb-4 md:mb-0">
-                          <li>
-                            <a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-                              Profile
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-                              Settings
-                            </a>
-                          </li>
-                          <li>
-                            <a href="/logout" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
-                              Logout
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
+                  <div
+                    onMouseEnter={handleAccountMouseEnter}
+                    onMouseLeave={handleAccountMouseLeave}
+                    className={`absolute -translate-x-1/3 w-40 pt-2 top-full z-50 shadow-lg transition-all duration-300 rounded-sm ease-in-out transform ${
+                      isUserDropdownOpen ? 'opacity-100 backdrop-blur-2xl bg-black/40 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
+                    }`}
+                  >
+                    <div className="w-full py-5 px-8 text-sm text-white">
+                      <ul className="space-y-4 sm:mb-4 md:mb-0">
+                        <li>
+                          <a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+                            Profile
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+                            Settings
+                          </a>
+                        </li>
+                        <li>
+                          <a href="/logout" className="hover:underline hover:text-blue-600 dark:hover:text-blue-500">
+                            Logout
+                          </a>
+                        </li>
+                      </ul>
                     </div>
+                  </div>
                 </div>
               </>
             ) : (
@@ -178,15 +249,16 @@ const Navbar = () => {
               <>
               {isCheckoutDrawerOpen && (
                 <div
-                  className={`fixed inset-0 z-40 bg-black bg-opacity-25 transform transition-opacity duration-300 ease-in-out ${
-                    isCheckoutDrawerOpen ? 'backdrop-blur-sm' : 'backdrop-blur-none'
+                  className={`fixed inset-0 z-40 bg-opacity-25 transform transition-opacity duration-300 ease-in-out ${
+                    isCheckoutDrawerOpen ? 'backdrop-blur-sm bg-black/50' : 'backdrop-blur-none'
                   }`}
+                  style={{ marginLeft: '0px'}}
                   onClick={toggleCheckoutDrawer}
                 ></div>
               )}
 
 
-                <div className={`fixed top-0 right-0 z-50 h-screen bg-white dark:bg-black w-1/3 overflow-y-auto transform transition-transform duration-300 ease-in-out ${
+                <div className={`fixed top-0 right-0 z-50 h-screen bg-black w-1/3 overflow-y-auto transform transition-transform duration-300 ease-in-out ${
                     isCheckoutDrawerOpen ? 'translate-x-0' : 'translate-x-full'
                   }`}
                 >

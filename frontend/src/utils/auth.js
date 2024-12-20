@@ -1,12 +1,15 @@
 import useAuthStore from '../store/auth';
 import axios from './axios';
 import { jwtDecode } from "jwt-decode";
-import Cookies from 'js-cookie';
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 export const login = async (email, password) => {
     try {
-        const response = await axios.post('user/token/', { email, password });
-        console.log('Response:', response);
+        const response = await axios.post('user/token/', 
+            { email, password },
+        );
         const { data, status } = response;
 
         if (status === 200){
@@ -25,7 +28,6 @@ export const login = async (email, password) => {
 export const register = async (email, username, full_name, phone, password, password2) => {
     try {
         const response = await axios.post('user/register/', { email, username, full_name, phone, password, password2 });
-        console.log('Response:', response);
         const { data } = response;
 
         await login(email, password);
@@ -41,14 +43,14 @@ export const register = async (email, username, full_name, phone, password, pass
 }
 
 export const logout = () => {
-    Cookies.remove('access_token');
-    Cookies.remove('refresh_token');
+    cookies.remove('access_token', {path: '/'});
+    cookies.remove('refresh_token', {path: '/'});
     useAuthStore.getState().setUser(null);
 }
 
 export const setUser = async () => {
-    const access_token = Cookies.get('access_token');
-    const refresh_token = Cookies.get('refresh_token');
+    const access_token = cookies.get('access_token');
+    const refresh_token = cookies.get('refresh_token');
 
     if (!access_token || !refresh_token) {
         return;
@@ -69,16 +71,11 @@ export const setUser = async () => {
 };
 
 export const setAuthUser = (access_token, refresh_token) => {
-    Cookies.set('access_token', access_token, {
-        expires: 1,  // Access token expires in 1 day
-        secure: true,
-    });
-    Cookies.set('refresh_token', refresh_token, {
-        expires: 7,  // Refresh token expires in 7 days
-        secure: true,
-    });
+    cookies.set('access_token', access_token, { path: '/', maxAge: 86400, secure: true });
+    cookies.set('refresh_token', refresh_token, { path: '/', maxAge: 604800, secure: true });
 
     const user = jwtDecode(access_token) ?? null;
+
 
     // If user information is present, update user state; otherwise, set loading state to false
     if (user) {
@@ -88,7 +85,7 @@ export const setAuthUser = (access_token, refresh_token) => {
 }
 
 export const getRefreshToken = async () => {
-    const refresh_token = Cookies.get('refresh_token');
+    const refresh_token = cookies.get('refresh_token');
     const response = await axios.post('user/token/refresh/', {
         refresh: refresh_token,
     });

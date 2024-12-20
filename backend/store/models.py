@@ -9,9 +9,6 @@ from shortuuid.django_fields import ShortUUIDField
 
 # Create your models here.
 
-
-
-
 class Category(models.Model):
     title = models.CharField(max_length=100)
     image = models.ImageField(upload_to='images/category', default="images/category/default.jpg", null=True, blank=True)
@@ -186,6 +183,8 @@ class CartOrder(models.Model):
     province = models.CharField(max_length=100, null=True, blank=True)
     country = models.CharField(max_length=100, null=True, blank=True)
     postal_code = models.CharField(max_length=100, null=True, blank=True)
+
+    stripe_session_id = models.CharField(max_length=1000, null=True, blank=True)
     
     oid = ShortUUIDField(unique=True, length=20, prefix="ORDER", alphabet="abcdefghijklmnopqrstuvwxyz0123456789")
     date = models.DateTimeField(auto_now_add=True)

@@ -26,9 +26,9 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Book Store API",
+        title="Facade API",
         default_version="v1",
-        description="This is the documentation for the Book Store API",
+        description="This is the documentation for the Facade API",
         terms_of_service="https://6lvcknight.github.io/foluwaderibigbe/",
         contact=openapi.Contact(email="foluwaderibigbe@gmail.com"),
         license=openapi.License(name="BSD License"),

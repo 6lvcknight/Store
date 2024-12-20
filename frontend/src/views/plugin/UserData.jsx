@@ -1,10 +1,12 @@
-import Cookie from 'js-cookie';
+import Cookies from 'universal-cookie'
 import React, { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
+const cookies = new Cookies();
+
 function UserData() {
-    let accessToken = Cookie.get('access_token');
-    let refreshToken = Cookie.get('refresh_token');
+    let accessToken = cookies.get('access_token');
+    let refreshToken = cookies.get('refresh_token');
 
     if (accessToken && refreshToken) {
         const token = refreshToken;

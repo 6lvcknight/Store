@@ -35,7 +35,7 @@ const ProductPage = () => {
   }
   
   return (
-    <div className='pt-24'>
+    <div className='pt-24 h-full'>
       <div className="grid grid-cols-2 md:grid-cols-3 md:p-12 gap-8 overflow-auto">
         {product.map((product, index) => (
           <div key={index}>

@@ -32,10 +32,17 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = []
 
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+]
+
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://localhost:5173",
 ]
+
+CORS_ALLOW_HEADERS = ['*']
 
 # Application definition
 
@@ -61,6 +68,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "drf_yasg",
     'corsheaders',
+    'anymail',
 ]
 
 MIDDLEWARE = [
@@ -156,6 +164,17 @@ AUTH_USER_MODEL = "userauths.User"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+STRIPE_PUBLIC_KEY = env("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
+
+# MAILGUN_API_KEY = env("MAILGUN_API_KEY")
+# MAILGUN_SENDER_DOMAIN = env("MAILGUN_SENDER_DOMAIN")
+
+# ANYMAIL = {
+#     "MAILGUN_API_KEY": MAILGUN_API_KEY,
+#     "MAILGUN_SENDER_DOMAIN": MAILGUN_SENDER_DOMAIN,
+# }
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=50),
@@ -193,7 +212,7 @@ JAZZMIN_SETTINGS = {
     "site_header": "My Site",
     "site_brand": "My Site",
     "welcome_title": "Welcome to My Site",
-    "copyright": "Meed's Books 2024",
+    "copyright": "Aim Facade 2024",
     "show_sidebar":True,
     "show_ui_builder":True,
 }

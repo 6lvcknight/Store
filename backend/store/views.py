@@ -1,18 +1,31 @@
-from django.shortcuts import render
-from django.db import transaction
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
-from .models import Product, Category, Cart, CartOrder, CartOrderItem, Tax, Coupon
-from .serializer import ProductSerializer, CategorySerializer, CartSerializer, CartOrderSerializer, CartOrderItemSerializer, CouponSerializer
+
+from .models import Product, Category, Cart, CartOrder, CartOrderItem, Tax, Coupon, Notification
+from .serializer import ProductSerializer, CategorySerializer, CartSerializer, CartOrderSerializer, CartOrderItemSerializer, CouponSerializer, NotificationSerializer
 from userauths.models import User
 
-from rest_framework import generics, status
-from rest_framework import permissions
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
 from decimal import Decimal
+import stripe
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 # Create your views here.
+
+def send_notification(user=None, vendor=None, order=None, order_item=None):
+    Notification.objects.create(
+        user=user,
+        message="Order has been placed",
+        order=order,
+        order_item=order_item,
+    )
 
 class CategoryListAPIView(generics.ListAPIView):
     queryset = Category.objects.all()
@@ -301,3 +314,55 @@ class CouponAPIView(generics.CreateAPIView):
                 return Response({"message": "Order is empty"}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Coupon not found"}, status=status.HTTP_200_OK)
+       
+class StripeCheckoutView(generics.CreateAPIView):
+    serializer_class = CartOrderSerializer
+    queryset = CartOrder.objects.all()
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        order_oid = self.kwargs['order_oid']
+        
+        try:
+            order = CartOrder.objects.get(oid=order_oid)
+        except CartOrder.DoesNotExist:
+            return Response({"message": "Order not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                customer_email=order.email,
+                payment_method_types=['card'],
+                line_items=[
+                    {
+                        'price_data': {
+                            'currency': 'cad',
+                            'product_data': {
+                                'name': order.full_name,
+                            },
+                            'unit_amount': int(order.total * 100),
+                        },
+                        'quantity': 1,
+                    },
+                ],
+                mode='payment',
+                success_url=f'http://localhost:5173/payment-success/{order_oid}?session_id={{CHECKOUT_SESSION_ID}}',
+                cancel_url=f'http://localhost:5173/payment-unsuccessful/?session_id={{CHECKOUT_SESSION_ID}}',
+            )
+
+            order.stripe_session_id = checkout_session.id
+            order.save()
+
+            return Response({"url": checkout_session.url}, status=status.HTTP_201_CREATED)
+        except stripe.error.StripeError as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class SearchProductAPIView(generics.ListCreateAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.AllowAny]
+    queryset = Product.objects.all()
+
+    def get_queryset(self):
+        query = self.request.GET.get('query')
+        products = Product.objects.filter(status='published', title__icontains=query)
+        return products

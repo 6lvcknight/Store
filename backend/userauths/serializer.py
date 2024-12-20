@@ -19,7 +19,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
             token['vendor'] = user.vendor.id
         except:
             token['vendor'] = 0
-
+            
         return token
     
 class RegisterSerializer(serializers.ModelSerializer):

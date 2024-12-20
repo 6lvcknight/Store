@@ -38,10 +38,11 @@ const LoginPage = () => {
             setIsLoading(false);
         }
     };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-white dark:bg-black pt-24">
-    <div className='w-[420px] border-[2px] border-solid border-[#B4BFC5] text-white p-[30px] backdrop-opacity-30'>
-        <h1 className='text-[#DEDAD7] text-[36px] text-center font-bold'>Login</h1>
+    <div className='w-[420px] border-[2px] border-solid dark:border-white text-white p-[30px] backdrop-opacity-30'>
+        <h1 className='text-white text-[36px] text-center font-bold'>Login</h1>
         <form onSubmit={handleLogin} className='mt-8 mb-2 space-y-8'>
             <div className='relative w-full h-12'>
                 <input 
@@ -54,7 +55,7 @@ const LoginPage = () => {
                     required
                     className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400'
                 />
-                <i className='text-[#DEDAD7] absolute transform -translate-y-1/2 right-5 top-1/2'><Mail /></i>
+                <i className='text-white absolute transform -translate-y-1/2 right-5 top-1/2'><Mail /></i>
             </div>
             <div className='relative w-full h-12'>
                 <input 
@@ -67,10 +68,10 @@ const LoginPage = () => {
                     required
                     className='pl-3 w-full h-full bg-transparent border-none outline-none text-black dark:text-white text-[16px] placeholder:text-slate-400 rounded-xl'
                 />
-                <i className='text-[#DEDAD7] absolute transform -translate-y-1/2 right-5 top-1/2'><RectangleEllipsis /></i>
+                <i className='text-white absolute transform -translate-y-1/2 right-5 top-1/2'><RectangleEllipsis /></i>
             </div>
 
-            <div className="flex justify-between items-center text-[#DEDAD7] text-sm mb-6">
+            <div className="flex justify-between items-center text-white text-sm mb-6">
                 <label className="flex items-center">
                     <input type="checkbox" className="mr-2" />
                         Remember me
@@ -78,12 +79,12 @@ const LoginPage = () => {
                 <NavLink to="/password-reset" className="hover:underline">Forgot password?</NavLink>
             </div>
 
-            <button className="w-full h-12 bg-[#DEDAD7] border-none outline-none shadow-lg cursor-pointer text-gray-600 font-semibold mt-4" 
+            <button className="w-full h-12 bg-white border-none outline-none shadow-lg cursor-pointer text-gray-600 font-semibold mt-4" 
             type="submit">
                 Login
             </button>
 
-            <div className="text-center text-[#DEDAD7] mt-6">
+            <div className="text-center text-white mt-6">
                 <p>Don't have an account? <NavLink to="/register" className="font-semibold">Sign Up</NavLink></p>
             </div>
         </form>

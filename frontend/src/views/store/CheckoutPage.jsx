@@ -35,8 +35,6 @@ const CheckoutPage = () => {
         state.user,
     ]);
 
-    console.log(userData);
-
     // Fetch cart data
     const fetchCartData = async (cartId, userId) => {
         const url = userId ? `store/cart/${cartId}/${userId}` : `store/cart/${cartId}`;
@@ -67,8 +65,8 @@ const CheckoutPage = () => {
     if (cart_id !== null || cart_id !== undefined) {
         if (userData !== undefined) {
         useEffect(() => {
-            fetchCartData(cart_id, userData?.user_id);
-            fetchCartDetail(cart_id, userData?.user_id);
+            fetchCartData(cart_id, user()?.user_id);
+            fetchCartDetail(cart_id, user()?.user_id);
         }, [])
         } else {
         useEffect(() => {
@@ -80,6 +78,7 @@ const CheckoutPage = () => {
 
     // Handle form field changes
     const handleChange = (event) => {
+        setEmail(userData.email);
         const { name, value } = event.target;
         switch (name) {
         case 'firstName':

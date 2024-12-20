@@ -7,6 +7,7 @@ from userauths.models import User
 class Vendor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='vendor/images/', null=True, blank=True, default='vendor/images/default.jpg')
+    video = models.FileField(upload_to='vendor/videos/', null=True, blank=True)
     name = models.CharField(max_length=100, help_text="Shop Name", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     mobile = models.CharField(max_length=100, help_text="Shop Mobile Number", null=True, blank=True)
