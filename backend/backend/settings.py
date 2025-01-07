@@ -30,12 +30,13 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["6lvcknightapistore.up.railway.app"]
 
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = ['http://localhost:5173',]
 
 CORS_ALLOWED_ORIGINS = [
+    "https://6lvcknightapistore.up.railway.app",
     "http://127.0.0.1:5173",
     "http://localhost:5173",
 ]
