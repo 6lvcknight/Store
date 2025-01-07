@@ -33,7 +33,7 @@ DEBUG = env("DEBUG")
 ALLOWED_HOSTS = ["6lvcknightapistore.up.railway.app"]
 
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173',]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173', "https://6lvcknightapistore.up.railway.app"]
 
 CORS_ALLOWED_ORIGINS = [
     "https://6lvcknightapistore.up.railway.app",
