@@ -3,7 +3,6 @@ import { Mail, RectangleEllipsis, User } from 'lucide-react'
 import { login } from '../../utils/auth';
 import { NavLink, useNavigate } from 'react-router-dom';
 import useAuthStore from '../../store/auth';
-import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
     const navigate = useNavigate();

@@ -33,9 +33,7 @@ DEBUG = env("DEBUG")
 ALLOWED_HOSTS = []
 
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
-]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173',]
 
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
@@ -43,6 +41,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_HEADERS = ['*']
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
 # Application definition
 
@@ -69,6 +68,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     'corsheaders',
     'anymail',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -152,7 +152,7 @@ STATIC_URL = "static/"
 STATICFILE_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_URL = "/media/"
+MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -174,6 +174,41 @@ STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
 #     "MAILGUN_API_KEY": MAILGUN_API_KEY,
 #     "MAILGUN_SENDER_DOMAIN": MAILGUN_SENDER_DOMAIN,
 # }
+
+#AWS Configs
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+
+AWS_S3_FILE_OVERWRITE = False
+
+AWS_DEFAULT_ACL = 'public-read'
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+STORAGES = {
+   "default": {
+        "BACKEND" : "storages.backends.s3boto3.S3StaticStorage",
+    },
+
+    "staticfiles":  {
+        "BACKEND" : "storages.backends.s3boto3.S3StaticStorage",
+    },
+}
+
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+AWS_LOCATION = 'static'
+
+STATIC_LOCATION = 'static'
+
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+
+#jwt
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
