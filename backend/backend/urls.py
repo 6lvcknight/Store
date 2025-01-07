@@ -42,7 +42,7 @@ urlpatterns = [
     path("api/v1/", include("api.urls")),
 
     # Documnetation
-    path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
+    path("", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
 ]
 
 if settings.DEBUG:
