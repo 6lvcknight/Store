@@ -8,7 +8,6 @@ from rest_framework import generics, permissions
 from .models import User, Profile
 from .serializer import MyTokenObtainPairSerializer, RegisterSerializer, UserSerializer, ProfileSerializer
 
-import random
 import shortuuid
 
 # Create your views here.

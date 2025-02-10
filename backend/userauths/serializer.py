@@ -52,7 +52,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             user.username = email_username
             user.set_password(validated_data['password'])
             user.save()
-
             return user
         except IntegrityError as e:
             if 'UNIQUE constraint' in str(e):
